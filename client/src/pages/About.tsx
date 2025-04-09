@@ -167,7 +167,7 @@ const About: React.FC = () => {
                 }}
               />
               <Typography variant="h4" component="h1" gutterBottom>
-                {userProfile?.name || "John Doe"}
+                {userProfile?.name || "Loading..."}
               </Typography>
               <Typography variant="h6" color="primary" gutterBottom>
                 Full Stack Developer
@@ -237,7 +237,7 @@ const About: React.FC = () => {
                           Email
                         </Typography>
                         <Typography variant="body2">
-                          {userProfile?.email || "contact@example.com"}
+                          {userProfile?.email || "Loading..."}
                         </Typography>
                       </Box>
                     </CardContent>

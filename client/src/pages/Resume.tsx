@@ -143,7 +143,7 @@ const Resume: React.FC = () => {
           {/* Header */}
           <Box sx={{ textAlign: "center", mb: 4 }}>
             <Typography variant="h4" component="h2" gutterBottom>
-              {userProfile?.name || "John Doe"}
+              {userProfile?.name || "Loading..."}
             </Typography>
             <Typography variant="h6" color="primary">
               Full Stack Developer
@@ -152,7 +152,7 @@ const Resume: React.FC = () => {
               {userProfile?.contact?.address &&
                 `${userProfile.contact.address} • `}
               {userProfile?.contact?.phone && `${userProfile.contact.phone} • `}
-              {userProfile?.email || "example@email.com"}
+              {userProfile?.email || "Loading..."}
             </Typography>
             <Box
               sx={{ display: "flex", justifyContent: "center", gap: 2, mt: 1 }}
