@@ -92,7 +92,9 @@ export const loginUser = async (req: Request, res: Response) => {
 // @access  Private
 export const getUserProfile = async (req: Request, res: Response) => {
   try {
-    const user = await User.findById((req as any).user.id);
+    const user = await User.findById(
+      "" + process.env.USER_ID || (req as any).user.id
+    );
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -106,7 +108,6 @@ export const getUserProfile = async (req: Request, res: Response) => {
       bio: user.bio,
       socialLinks: user.socialLinks,
       contact: user.contact,
-      isAdmin: user.isAdmin,
     });
   } catch (error: any) {
     res.status(500).json({ message: error.message });
