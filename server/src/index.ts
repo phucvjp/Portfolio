@@ -54,7 +54,7 @@ mongoose
     });
   })
   .catch((error) => {
-    console.error("MongoDB connection error:", error);
+    console.error("MongoDB connection error:", error, process.env.MONGODB_URI);
   });
 
 // Handle unhandled promise rejections
