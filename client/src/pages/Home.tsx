@@ -16,6 +16,7 @@ import {
   useTheme,
   alpha,
   useMediaQuery,
+  Avatar,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { motion } from "framer-motion";
@@ -67,7 +68,9 @@ const Home: React.FC = () => {
     .slice(0, 3); // Show only 3 featured projects
 
   // Get top skills
-  const topSkills = (skills as Skill[]).slice(0, 6); // Show only top 6 skills
+  const topSkills = (skills as Skill[])
+    .sort((a: Skill, b: Skill) => b.proficiency - a.proficiency)
+    .slice(0, 6); // Show only top 6 skills
 
   // Loading state
   const isLoading = isLoadingProjects || isLoadingSkills;
@@ -332,34 +335,53 @@ const Home: React.FC = () => {
                 {topSkills.map((skill: Skill) => (
                   <Grid item xs={12} sm={6} md={4} key={skill._id}>
                     <motion.div variants={itemVariants}>
-                      <Card sx={{ p: 3 }}>
-                        <Typography variant="h6" gutterBottom>
-                          {skill.name}
-                        </Typography>
-                        <Box sx={{ display: "flex", alignItems: "center" }}>
-                          <Box sx={{ width: "100%", mr: 1 }}>
-                            <LinearProgress
-                              variant="determinate"
-                              value={skill.proficiency * 20}
+                      <Card
+                        sx={{ p: 3 }}
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+
+                          transition: "all 0.3s ease-in-out",
+                        }}
+                      >
+                        <div>
+                          <Typography variant="h6" gutterBottom>
+                            {skill.name}
+                          </Typography>
+
+                          <Box sx={{ mt: 1 }}>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
                               sx={{
-                                height: 8,
-                                borderRadius: 5,
+                                fontWeight: "medium",
+                                display: "inline-block",
+                                px: 1.5,
+                                py: 0.5,
+                                borderRadius: 1,
                                 backgroundColor: alpha(
                                   theme.palette.primary.main,
-                                  0.2
+                                  0.1
                                 ),
-                                "& .MuiLinearProgress-bar": {
-                                  borderRadius: 5,
-                                },
                               }}
-                            />
-                          </Box>
-                          <Box minWidth={35}>
-                            <Typography variant="body2" color="text.secondary">
-                              {skill.proficiency}/5
+                            >
+                              {skill.proficiency === 1 && "Beginner"}
+                              {skill.proficiency === 2 && "Intermediate"}
+                              {skill.proficiency === 3 && "Advanced"}
+                              {skill.proficiency === 4 && "Professional"}
+                              {skill.proficiency === 5 && "Master"}
                             </Typography>
                           </Box>
-                        </Box>
+                        </div>
+                        <img
+                          src={skill.icon || "/placeholder-icon.png"}
+                          alt={skill.name}
+                          style={{
+                            width: 50,
+                            height: 50,
+                            objectFit: "fill",
+                          }}
+                        />
                       </Card>
                     </motion.div>
                   </Grid>

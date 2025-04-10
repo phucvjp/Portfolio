@@ -34,8 +34,9 @@ const Skills: React.FC = () => {
   const [editingSkill, setEditingSkill] = useState<any>(null);
   const [formData, setFormData] = useState({
     name: "",
-    level: "",
+    proficiency: "",
     category: "",
+    icon: "",
   });
 
   const { data: skills, isLoading } = useSkills();
@@ -48,15 +49,17 @@ const Skills: React.FC = () => {
       setEditingSkill(skill);
       setFormData({
         name: skill.name,
-        level: skill.level,
+        proficiency: skill.proficiency,
         category: skill.category,
+        icon: skill.icon,
       });
     } else {
       setEditingSkill(null);
       setFormData({
         name: "",
-        level: "",
+        proficiency: "",
         category: "",
+        icon: "",
       });
     }
     setOpen(true);
@@ -67,8 +70,9 @@ const Skills: React.FC = () => {
     setEditingSkill(null);
     setFormData({
       name: "",
-      level: "",
+      proficiency: "",
       category: "",
+      icon: "",
     });
   };
 
@@ -117,8 +121,9 @@ const Skills: React.FC = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>Icon</TableCell>
               <TableCell>Name</TableCell>
-              <TableCell>Level</TableCell>
+              <TableCell>Proficiency</TableCell>
               <TableCell>Category</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
@@ -126,8 +131,15 @@ const Skills: React.FC = () => {
           <TableBody>
             {skills?.map((skill: any) => (
               <TableRow key={skill._id}>
+                <TableCell>
+                  <img
+                    src={skill.icon}
+                    alt={skill.name}
+                    style={{ width: 24, height: 24 }}
+                  />
+                </TableCell>
                 <TableCell>{skill.name}</TableCell>
-                <TableCell>{skill.level}</TableCell>
+                <TableCell>{skill.proficiency}</TableCell>
                 <TableCell>{skill.category}</TableCell>
                 <TableCell>
                   <IconButton onClick={() => handleOpen(skill)}>
@@ -150,6 +162,16 @@ const Skills: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <DialogContent>
             <TextField
+              margin="dense"
+              label="Icon URL"
+              fullWidth
+              value={formData.icon}
+              onChange={(e) =>
+                setFormData({ ...formData, icon: e.target.value })
+              }
+              required
+            />
+            <TextField
               autoFocus
               margin="dense"
               label="Name"
@@ -164,9 +186,9 @@ const Skills: React.FC = () => {
               margin="dense"
               label="Level"
               fullWidth
-              value={formData.level}
+              value={formData.proficiency}
               onChange={(e) =>
-                setFormData({ ...formData, level: e.target.value })
+                setFormData({ ...formData, proficiency: e.target.value })
               }
               required
             />

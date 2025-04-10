@@ -198,7 +198,7 @@ const Resume: React.FC = () => {
             </Typography>
             <Typography variant="body1" paragraph>
               {userProfile?.bio ||
-                "Full Stack Developer with experience designing and developing web applications using React, Node.js, and TypeScript. Passionate about creating clean, efficient, and user-friendly applications with a focus on performance and scalability."}
+                "As a Backend Developer Intern specializing in Java, I’m excited to apply my skills in the Spring Framework within a dynamic development environment. I have hands-on experience in building robust RESTful APIs and a foundational understanding of Node.js and MongoDB, expanding my versatility as a developer. Eager to continuously learn and adapt, I’m enthusiastic about exploring new technologies and contributing creatively to real-world projects. I look forward to taking on meaningful challenges and growing through practical experience in a fast-paced, collaborative team setting."}
             </Typography>
           </Box>
 

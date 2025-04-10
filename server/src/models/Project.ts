@@ -46,6 +46,10 @@ const ProjectSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    time: {
+      type: String,
+      required: [true, "Please provide a project time"],
+    },
   },
   { timestamps: true }
 );

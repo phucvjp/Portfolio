@@ -326,8 +326,9 @@ const About: React.FC = () => {
             animate="visible"
           >
             <Grid container spacing={4}>
-              {Object.entries(skillsByCategory).map(
-                ([category, categorySkills]) => (
+              {Object.entries(skillsByCategory)
+                .sort(([, a], [, b]) => b.length - a.length) // Sort by the length of skill arrays
+                .map(([category, categorySkills]) => (
                   <Grid item xs={12} md={4} key={category}>
                     <motion.div variants={itemVariants}>
                       <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
@@ -345,47 +346,69 @@ const About: React.FC = () => {
                           }}
                         >
                           {categorySkills.map((skill) => (
-                            <Box key={skill._id}>
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "space-between",
-                                  mb: 0.5,
-                                }}
-                              >
-                                <Typography variant="body2">
-                                  {skill.name}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
+                            <React.Fragment key={skill._id}>
+                              <Box>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    mb: 0.5,
+                                  }}
                                 >
-                                  {skill.proficiency}/5
-                                </Typography>
+                                  <Avatar
+                                    variant="rounded"
+                                    sx={{
+                                      width: 24,
+                                      height: 24,
+                                      backgroundColor: alpha(
+                                        theme.palette.primary.main,
+                                        0.1
+                                      ),
+                                      color: theme.palette.primary.main,
+                                      mr: 1,
+                                    }}
+                                    src={skill.icon}
+                                  >
+                                    {skill.icon ? null : skill.name.charAt(0)}
+                                  </Avatar>
+                                  <Typography variant="body2">
+                                    {skill.name}
+                                  </Typography>
+                                  {skill?.proficiency && (
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                      sx={{
+                                        fontWeight: "medium",
+                                        display: "inline-block",
+                                        px: 1.5,
+                                        py: 0.5,
+                                        borderRadius: 1,
+                                        backgroundColor: alpha(
+                                          theme.palette.primary.main,
+                                          0.1
+                                        ),
+                                      }}
+                                    >
+                                      {skill.proficiency === 1 && "Beginner"}
+                                      {skill.proficiency === 2 &&
+                                        "Intermediate"}
+                                      {skill.proficiency === 3 && "Advanced"}
+                                      {skill.proficiency === 4 &&
+                                        "Professional"}
+                                      {skill.proficiency === 5 && "Master"}
+                                    </Typography>
+                                  )}
+                                </Box>
                               </Box>
-                              <LinearProgress
-                                variant="determinate"
-                                value={skill.proficiency * 20}
-                                sx={{
-                                  height: 6,
-                                  borderRadius: 3,
-                                  backgroundColor: alpha(
-                                    theme.palette.primary.main,
-                                    0.1
-                                  ),
-                                  "& .MuiLinearProgress-bar": {
-                                    borderRadius: 3,
-                                  },
-                                }}
-                              />
-                            </Box>
+                              <Divider />
+                            </React.Fragment>
                           ))}
                         </Box>
                       </Paper>
                     </motion.div>
                   </Grid>
-                )
-              )}
+                ))}
             </Grid>
           </motion.div>
         )}

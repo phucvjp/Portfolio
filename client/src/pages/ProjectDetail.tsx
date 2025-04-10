@@ -247,6 +247,10 @@ const ProjectDetail: React.FC = () => {
               />
             )}
 
+            <Typography variant="body1" gutterBottom>
+              {project.time}
+            </Typography>
+
             <Typography variant="h6" gutterBottom sx={{ mt: 3 }}>
               Technologies Used
             </Typography>

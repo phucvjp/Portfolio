@@ -78,6 +78,7 @@ interface Project {
   demoLink?: string;
   featured: boolean;
   order: number;
+  time: string;
 }
 
 interface Skill {
@@ -453,6 +454,17 @@ const ProjectsManager = () => {
                   fullWidth
                   required
                   value={currentProject.title}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  name="time"
+                  label="Project Time"
+                  fullWidth
+                  required
+                  value={currentProject.time}
                   onChange={handleChange}
                 />
               </Grid>
