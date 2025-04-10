@@ -6,7 +6,7 @@ import Experience from "../models/Experience";
 // @access  Public
 export const getExperiences = async (req: Request, res: Response) => {
   try {
-    const experiences = await Experience.find().sort({ from: -1 });
+    const experiences = await Experience.find().sort({ startDate: -1 });
     res.json(experiences);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -35,15 +35,22 @@ export const getExperienceById = async (req: Request, res: Response) => {
 // @access  Private/Admin
 export const createExperience = async (req: Request, res: Response) => {
   try {
-    const { title, organization, location, from, to, current, description } =
-      req.body;
+    const {
+      title,
+      organization,
+      location,
+      startDate,
+      endDate,
+      current,
+      description,
+    } = req.body;
 
     const experience = await Experience.create({
       title,
       organization,
       location,
-      from,
-      to,
+      startDate,
+      endDate,
       current,
       description,
     });
@@ -59,8 +66,15 @@ export const createExperience = async (req: Request, res: Response) => {
 // @access  Private/Admin
 export const updateExperience = async (req: Request, res: Response) => {
   try {
-    const { title, organization, location, from, to, current, description } =
-      req.body;
+    const {
+      title,
+      organization,
+      location,
+      startDate,
+      endDate,
+      current,
+      description,
+    } = req.body;
 
     const experience = await Experience.findById(req.params.id);
 
@@ -72,8 +86,8 @@ export const updateExperience = async (req: Request, res: Response) => {
     experience.title = title || experience.title;
     experience.organization = organization || experience.organization;
     if (location !== undefined) experience.location = location;
-    experience.from = from || experience.from;
-    if (to !== undefined) experience.to = to;
+    experience.startDate = startDate || experience.startDate;
+    if (endDate !== undefined) experience.endDate = endDate;
     if (current !== undefined) experience.current = current;
     experience.description = description || experience.description;
 

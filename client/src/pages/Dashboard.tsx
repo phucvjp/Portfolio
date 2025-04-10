@@ -40,6 +40,7 @@ import CodeIcon from "@mui/icons-material/Code";
 import PersonIcon from "@mui/icons-material/Person";
 import EmailIcon from "@mui/icons-material/Email";
 import InsertDriveFileIcon from "@mui/icons-material/InsertDriveFile";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import {
   Add as AddIcon,
   Edit as EditIcon,
@@ -67,6 +68,7 @@ import Skills from "../components/dashboard/Skills";
 import Experiences from "../components/dashboard/Experiences";
 import Education from "../components/dashboard/Education";
 import Messages from "../components/dashboard/Messages";
+import Honors from "../components/dashboard/Honors";
 
 interface Project {
   _id: string;
@@ -1179,6 +1181,11 @@ const ResumeManager = () => {
   );
 };
 
+// HonorsManager Component
+const HonorsManager = () => {
+  return <Honors />;
+};
+
 const Dashboard: React.FC = () => {
   const { user, isLoggedIn, loading } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -1194,6 +1201,7 @@ const Dashboard: React.FC = () => {
     { name: "Skills", icon: <CodeIcon />, path: "skills" },
     { name: "Experience", icon: <WorkIcon />, path: "experience" },
     { name: "Education", icon: <SchoolIcon />, path: "education" },
+    { name: "Honors", icon: <EmojiEventsIcon />, path: "honors" },
     { name: "Profile", icon: <PersonIcon />, path: "profile" },
     { name: "Messages", icon: <EmailIcon />, path: "messages" },
     { name: "Resume", icon: <InsertDriveFileIcon />, path: "resume" },
@@ -1283,6 +1291,7 @@ const Dashboard: React.FC = () => {
             <Route path="/skills" element={<SkillsManager />} />
             <Route path="/experience" element={<ExperienceManager />} />
             <Route path="/education" element={<EducationManager />} />
+            <Route path="/honors" element={<HonorsManager />} />
             <Route path="/profile" element={<ProfileManager />} />
             <Route path="/messages" element={<MessagesManager />} />
             <Route path="/resume" element={<ResumeManager />} />

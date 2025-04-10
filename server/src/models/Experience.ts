@@ -4,8 +4,8 @@ interface IExperience extends mongoose.Document {
   title: string;
   organization: string;
   location?: string;
-  from: string;
-  to?: string;
+  startDate: string;
+  endDate?: string;
   current: boolean;
   description: string;
   createdAt: Date;
@@ -28,11 +28,11 @@ const ExperienceSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    from: {
+    startDate: {
       type: String,
       required: [true, "Please provide a start date"],
     },
-    to: {
+    endDate: {
       type: String,
     },
     current: {

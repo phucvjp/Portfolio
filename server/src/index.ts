@@ -10,6 +10,7 @@ import experienceRoutes from "./routes/experience";
 import educationRoutes from "./routes/education";
 import contactRoutes from "./routes/contact";
 import uploadRoutes from "./routes/uploads";
+import honorRoutes from "./routes/honors";
 import { errorHandler } from "./middleware/errorHandler";
 
 // Load environment variables
@@ -39,6 +40,7 @@ app.use("/api/experiences", experienceRoutes);
 app.use("/api/educations", educationRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/honors", honorRoutes);
 
 // Error handling middleware
 app.use(errorHandler);

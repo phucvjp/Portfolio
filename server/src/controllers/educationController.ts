@@ -6,7 +6,7 @@ import Education from "../models/Education";
 // @access  Public
 export const getEducations = async (req: Request, res: Response) => {
   try {
-    const educations = await Education.find().sort({ from: -1 });
+    const educations = await Education.find().sort({ startDate: -1 });
     res.json(educations);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
@@ -35,16 +35,23 @@ export const getEducationById = async (req: Request, res: Response) => {
 // @access  Private/Admin
 export const createEducation = async (req: Request, res: Response) => {
   try {
-    const { title, organization, location, from, to, current, description } =
-      req.body;
+    const {
+      title,
+      institution,
+      location,
+      startDate,
+      endDate,
+      current,
+      description,
+    } = req.body;
 
     const education = await Education.create({
       title,
-      organization,
+      institution,
       location,
-      from,
-      to,
-      current,
+      startDate,
+      endDate,
+      current: !endDate || endDate?.length === 0 ? true : false,
       description,
     });
 
@@ -59,8 +66,15 @@ export const createEducation = async (req: Request, res: Response) => {
 // @access  Private/Admin
 export const updateEducation = async (req: Request, res: Response) => {
   try {
-    const { title, organization, location, from, to, current, description } =
-      req.body;
+    const {
+      title,
+      institution,
+      location,
+      startDate,
+      endDate,
+      current,
+      description,
+    } = req.body;
 
     const education = await Education.findById(req.params.id);
 
@@ -70,10 +84,10 @@ export const updateEducation = async (req: Request, res: Response) => {
 
     // Update education fields
     education.title = title || education.title;
-    education.organization = organization || education.organization;
+    education.institution = institution || education.institution;
     if (location !== undefined) education.location = location;
-    education.from = from || education.from;
-    if (to !== undefined) education.to = to;
+    education.startDate = startDate || education.startDate;
+    if (endDate !== undefined) education.endDate = endDate;
     if (current !== undefined) education.current = current;
     education.description = description || education.description;
 

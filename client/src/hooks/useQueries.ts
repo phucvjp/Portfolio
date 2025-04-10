@@ -23,6 +23,11 @@ import {
   getContactMessages,
   deleteContactMessage,
   markContactMessageAsRead,
+  getHonors,
+  getHonorById,
+  createHonor,
+  updateHonor,
+  deleteHonor,
 } from "../utils/api";
 
 // Query Keys
@@ -34,6 +39,7 @@ export const QUERY_KEYS = {
   EXPERIENCES: "experiences",
   EDUCATIONS: "educations",
   MESSAGES: "messages",
+  HONORS: "honors",
 };
 
 // User Profile Hooks
@@ -270,6 +276,56 @@ export const useDeleteMessage = () => {
     mutationFn: deleteContactMessage,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.MESSAGES] });
+    },
+  });
+};
+
+// Honors Hooks
+export const useHonors = () => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.HONORS],
+    queryFn: getHonors,
+  });
+};
+
+export const useHonorById = (id: string) => {
+  return useQuery({
+    queryKey: [QUERY_KEYS.HONORS, id],
+    queryFn: () => getHonorById(id),
+    enabled: !!id,
+  });
+};
+
+export const useCreateHonor = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: createHonor,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.HONORS] });
+    },
+  });
+};
+
+export const useUpdateHonor = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string; data: any }) =>
+      updateHonor(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.HONORS] });
+    },
+  });
+};
+
+export const useDeleteHonor = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteHonor,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.HONORS] });
     },
   });
 };

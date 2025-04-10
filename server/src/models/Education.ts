@@ -2,10 +2,10 @@ import mongoose from "mongoose";
 
 interface IEducation extends mongoose.Document {
   title: string;
-  organization: string;
+  institution: string;
   location?: string;
-  from: string;
-  to?: string;
+  startDate: string;
+  endDate?: string;
   current: boolean;
   description: string;
   createdAt: Date;
@@ -19,7 +19,7 @@ const EducationSchema = new mongoose.Schema(
       required: [true, "Please provide a degree or certification title"],
       trim: true,
     },
-    organization: {
+    institution: {
       type: String,
       required: [true, "Please provide an institution name"],
       trim: true,
@@ -28,11 +28,11 @@ const EducationSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    from: {
+    startDate: {
       type: String,
       required: [true, "Please provide a start date"],
     },
-    to: {
+    endDate: {
       type: String,
     },
     current: {

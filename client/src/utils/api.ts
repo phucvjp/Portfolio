@@ -235,4 +235,55 @@ export const convertToBase64 = (file: File): Promise<string> => {
   });
 };
 
+// Honors API
+export const getHonors = async () => {
+  try {
+    const response = await api.get("/honors");
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching honors:", error);
+    throw error;
+  }
+};
+
+export const getHonorById = async (id: string) => {
+  try {
+    const response = await api.get(`/honors/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching honor ${id}:`, error);
+    throw error;
+  }
+};
+
+export const createHonor = async (data: any) => {
+  try {
+    const response = await api.post("/honors", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating honor:", error);
+    throw error;
+  }
+};
+
+export const updateHonor = async (id: string, data: any) => {
+  try {
+    const response = await api.put(`/honors/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating honor ${id}:`, error);
+    throw error;
+  }
+};
+
+export const deleteHonor = async (id: string) => {
+  try {
+    const response = await api.delete(`/honors/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting honor ${id}:`, error);
+    throw error;
+  }
+};
+
 export default api;

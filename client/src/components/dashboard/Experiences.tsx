@@ -34,7 +34,7 @@ const Experiences: React.FC = () => {
   const [editingExperience, setEditingExperience] = useState<any>(null);
   const [formData, setFormData] = useState({
     title: "",
-    company: "",
+    organization: "",
     location: "",
     startDate: "",
     endDate: "",
@@ -52,7 +52,7 @@ const Experiences: React.FC = () => {
       setEditingExperience(experience);
       setFormData({
         title: experience.title,
-        company: experience.company,
+        organization: experience.organization,
         location: experience.location,
         startDate: experience.startDate,
         endDate: experience.endDate,
@@ -63,7 +63,7 @@ const Experiences: React.FC = () => {
       setEditingExperience(null);
       setFormData({
         title: "",
-        company: "",
+        organization: "",
         location: "",
         startDate: "",
         endDate: "",
@@ -79,7 +79,7 @@ const Experiences: React.FC = () => {
     setEditingExperience(null);
     setFormData({
       title: "",
-      company: "",
+      organization: "",
       location: "",
       startDate: "",
       endDate: "",
@@ -137,7 +137,7 @@ const Experiences: React.FC = () => {
           <TableHead>
             <TableRow>
               <TableCell>Title</TableCell>
-              <TableCell>Company</TableCell>
+              <TableCell>Organization</TableCell>
               <TableCell>Location</TableCell>
               <TableCell>Period</TableCell>
               <TableCell>Actions</TableCell>
@@ -147,7 +147,7 @@ const Experiences: React.FC = () => {
             {experiences?.map((experience: any) => (
               <TableRow key={experience._id}>
                 <TableCell>{experience.title}</TableCell>
-                <TableCell>{experience.company}</TableCell>
+                <TableCell>{experience.organization}</TableCell>
                 <TableCell>{experience.location}</TableCell>
                 <TableCell>
                   {experience.startDate} -{" "}
@@ -186,11 +186,11 @@ const Experiences: React.FC = () => {
             />
             <TextField
               margin="dense"
-              label="Company"
+              label="Organization"
               fullWidth
-              value={formData.company}
+              value={formData.organization}
               onChange={(e) =>
-                setFormData({ ...formData, company: e.target.value })
+                setFormData({ ...formData, organization: e.target.value })
               }
               required
             />

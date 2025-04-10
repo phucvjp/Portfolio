@@ -13,6 +13,7 @@ import {
   useTheme,
   alpha,
   Link,
+  Chip,
 } from "@mui/material";
 import {
   Timeline,
@@ -31,6 +32,7 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import EmailIcon from "@mui/icons-material/Email";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { motion } from "framer-motion";
 
 // React Query hooks
@@ -39,6 +41,7 @@ import {
   useSkills,
   useExperiences,
   useEducations,
+  useHonors,
 } from "../hooks/useQueries";
 
 // Types
@@ -55,10 +58,21 @@ interface TimelineEntry {
   title: string;
   organization: string;
   location?: string;
-  from: string;
+  startDate?: string;
+  endDate?: string;
+  from?: string;
   to?: string;
   current: boolean;
   description: string;
+}
+
+interface Honor {
+  _id: string;
+  title: string;
+  issuer: string;
+  date: string;
+  description: string;
+  url?: string;
 }
 
 interface UserProfile {
@@ -93,12 +107,15 @@ const About: React.FC = () => {
   const { data: education = [], isLoading: isLoadingEducation } =
     useEducations();
 
+  const { data: honors = [], isLoading: isLoadingHonors } = useHonors();
+
   // Overall loading state
   const isLoading =
     isLoadingProfile ||
     isLoadingSkills ||
     isLoadingExperiences ||
-    isLoadingEducation;
+    isLoadingEducation ||
+    isLoadingHonors;
 
   // Group skills by category
   const skillsByCategory = (skills as Skill[]).reduce((acc, skill) => {
@@ -211,7 +228,7 @@ const About: React.FC = () => {
             </Typography>
             <Typography variant="body1" paragraph>
               {userProfile?.bio ||
-                "As a Backend Developer Intern specializing in Java, I’m excited to apply my skills in the Spring Framework within a dynamic development environment. I have hands-on experience in building robust RESTful APIs and a foundational understanding of Node.js and MongoDB, expanding my versatility as a developer. Eager to continuously learn and adapt, I’m enthusiastic about exploring new technologies and contributing creatively to real-world projects. I look forward to taking on meaningful challenges and growing through practical experience in a fast-paced, collaborative team setting."}
+                "As a Backend Developer Intern specializing in Java, I'm excited to apply my skills in the Spring Framework within a dynamic development environment. I have hands-on experience in building robust RESTful APIs and a foundational understanding of Node.js and MongoDB, expanding my versatility as a developer. Eager to continuously learn and adapt, I'm enthusiastic about exploring new technologies and contributing creatively to real-world projects. I look forward to taking on meaningful challenges and growing through practical experience in a fast-paced, collaborative team setting."}
             </Typography>
             <Typography variant="body1" paragraph>
               I specialize in developing robust, maintainable, and scalable
@@ -416,6 +433,103 @@ const About: React.FC = () => {
 
       <Divider sx={{ my: 6 }} />
 
+      {/* Honors Section */}
+      {honors && honors.length > 0 && (
+        <Box sx={{ mb: 8 }}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <Typography
+              variant="h4"
+              component="h2"
+              gutterBottom
+              align="center"
+              sx={{ mb: 6 }}
+            >
+              Honors & Awards
+            </Typography>
+          </motion.div>
+
+          {isLoading ? (
+            <LinearProgress />
+          ) : (
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              <Grid container spacing={3}>
+                {honors.map((honor: Honor) => (
+                  <Grid item xs={12} md={6} key={honor._id}>
+                    <motion.div variants={itemVariants}>
+                      <Card
+                        elevation={2}
+                        sx={{
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          transition: "all 0.3s ease-in-out",
+                          "&:hover": {
+                            transform: "translateY(-5px)",
+                            boxShadow: 6,
+                          },
+                        }}
+                      >
+                        <CardContent>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              mb: 2,
+                            }}
+                          >
+                            <Avatar
+                              sx={{
+                                bgcolor: theme.palette.primary.main,
+                                mr: 2,
+                              }}
+                            >
+                              <EmojiEventsIcon />
+                            </Avatar>
+                            <Box>
+                              <Typography variant="h6" component="h3">
+                                {honor.title}
+                              </Typography>
+                              <Typography
+                                variant="subtitle1"
+                                color="text.secondary"
+                              >
+                                {honor.issuer} • {honor.date}
+                              </Typography>
+                            </Box>
+                          </Box>
+                          <Typography variant="body2" paragraph>
+                            {honor.description}
+                          </Typography>
+                          {honor.url && (
+                            <Link
+                              href={honor.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              View Certificate
+                            </Link>
+                          )}
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  </Grid>
+                ))}
+              </Grid>
+            </motion.div>
+          )}
+        </Box>
+      )}
+
+      <Divider sx={{ my: 6 }} />
+
       {/* Experience and Education Section */}
       <Box>
         <motion.div
@@ -459,8 +573,8 @@ const About: React.FC = () => {
                     <TimelineItem key={exp._id}>
                       <TimelineOppositeContent className="timeline-opposite-content">
                         <Typography variant="body2" color="text.secondary">
-                          {formatDate(exp.from)} -{" "}
-                          {formatDate(exp.to, exp.current)}
+                          {formatDate(exp.startDate)} -{" "}
+                          {formatDate(exp.endDate, exp.current)}
                         </Typography>
                       </TimelineOppositeContent>
                       <TimelineSeparator>
@@ -486,8 +600,8 @@ const About: React.FC = () => {
                                 mt: 1,
                               }}
                             >
-                              {formatDate(exp.from)} -{" "}
-                              {formatDate(exp.to, exp.current)}
+                              {formatDate(exp.startDate)} -{" "}
+                              {formatDate(exp.endDate, exp.current)}
                             </Typography>
                             {exp.location && (
                               <Typography
@@ -531,8 +645,8 @@ const About: React.FC = () => {
                     <TimelineItem key={edu._id}>
                       <TimelineOppositeContent className="timeline-opposite-content">
                         <Typography variant="body2" color="text.secondary">
-                          {formatDate(edu.from)} -{" "}
-                          {formatDate(edu.to, edu.current)}
+                          {formatDate(edu.startDate)} -{" "}
+                          {formatDate(edu.endDate, edu.current)}
                         </Typography>
                       </TimelineOppositeContent>
                       <TimelineSeparator>
@@ -558,8 +672,8 @@ const About: React.FC = () => {
                                 mt: 1,
                               }}
                             >
-                              {formatDate(edu.from)} -{" "}
-                              {formatDate(edu.to, edu.current)}
+                              {formatDate(edu.startDate)} -{" "}
+                              {formatDate(edu.endDate, edu.current)}
                             </Typography>
                             {edu.location && (
                               <Typography

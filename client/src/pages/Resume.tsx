@@ -14,11 +14,13 @@ import {
   useTheme,
   alpha,
   CircularProgress,
+  Chip,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
 import WorkIcon from "@mui/icons-material/Work";
 import SchoolIcon from "@mui/icons-material/School";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import { motion } from "framer-motion";
@@ -27,7 +29,17 @@ import {
   useSkills,
   useExperiences,
   useEducations,
+  useHonors,
 } from "../hooks/useQueries";
+
+interface Honor {
+  _id: string;
+  title: string;
+  issuer: string;
+  date: string;
+  description: string;
+  url?: string;
+}
 
 const Resume: React.FC = () => {
   const theme = useTheme();
@@ -43,12 +55,15 @@ const Resume: React.FC = () => {
   const { data: education = [], isLoading: isLoadingEducation } =
     useEducations();
 
+  const { data: honors = [], isLoading: isLoadingHonors } = useHonors();
+
   // Overall loading state
   const isLoading =
     isLoadingProfile ||
     isLoadingSkills ||
     isLoadingExperiences ||
-    isLoadingEducation;
+    isLoadingEducation ||
+    isLoadingHonors;
 
   // Group skills by category
   const formattedSkills = React.useMemo(() => {
@@ -198,7 +213,7 @@ const Resume: React.FC = () => {
             </Typography>
             <Typography variant="body1" paragraph>
               {userProfile?.bio ||
-                "As a Backend Developer Intern specializing in Java, I’m excited to apply my skills in the Spring Framework within a dynamic development environment. I have hands-on experience in building robust RESTful APIs and a foundational understanding of Node.js and MongoDB, expanding my versatility as a developer. Eager to continuously learn and adapt, I’m enthusiastic about exploring new technologies and contributing creatively to real-world projects. I look forward to taking on meaningful challenges and growing through practical experience in a fast-paced, collaborative team setting."}
+                "As a Backend Developer Intern specializing in Java, I'm excited to apply my skills in the Spring Framework within a dynamic development environment. I have hands-on experience in building robust RESTful APIs and a foundational understanding of Node.js and MongoDB, expanding my versatility as a developer. Eager to continuously learn and adapt, I'm enthusiastic about exploring new technologies and contributing creatively to real-world projects. I look forward to taking on meaningful challenges and growing through practical experience in a fast-paced, collaborative team setting."}
             </Typography>
           </Box>
 
@@ -299,6 +314,67 @@ const Resume: React.FC = () => {
                   </Typography>
                 </Box>
               ))}
+            </Box>
+          )}
+
+          {/* Honors & Awards */}
+          {honors.length > 0 && (
+            <Box sx={{ mb: 4 }}>
+              <Typography
+                variant="h5"
+                component="h3"
+                gutterBottom
+                sx={{
+                  borderBottom: `2px solid ${theme.palette.primary.main}`,
+                  pb: 1,
+                  mb: 2,
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "center" }}>
+                  <EmojiEventsIcon sx={{ mr: 1 }} />
+                  Honors & Awards
+                </Box>
+              </Typography>
+
+              <List>
+                {honors.map((honor: Honor) => (
+                  <ListItem
+                    key={honor._id}
+                    sx={{
+                      pl: 0,
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: "100%",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Typography variant="h6" component="div">
+                        {honor.title}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        {honor.date}
+                      </Typography>
+                    </Box>
+                    <Typography
+                      variant="subtitle1"
+                      color="primary"
+                      gutterBottom
+                    >
+                      {honor.issuer}
+                    </Typography>
+                    <Typography variant="body2" sx={{ mt: 1 }}>
+                      {honor.description}
+                    </Typography>
+                    <Divider sx={{ my: 2, width: "100%" }} />
+                  </ListItem>
+                ))}
+              </List>
             </Box>
           )}
 
