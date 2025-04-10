@@ -59,6 +59,7 @@ export const createProject = async (req: Request, res: Response) => {
       demoLink,
       featured,
       order,
+      time,
     } = req.body;
 
     const project = await Project.create({
@@ -70,6 +71,7 @@ export const createProject = async (req: Request, res: Response) => {
       demoLink,
       featured,
       order,
+      time,
     });
 
     res.status(201).json(project);
@@ -92,6 +94,7 @@ export const updateProject = async (req: Request, res: Response) => {
       demoLink,
       featured,
       order,
+      time,
     } = req.body;
 
     const project = await Project.findById(req.params.id);
@@ -109,6 +112,7 @@ export const updateProject = async (req: Request, res: Response) => {
     project.demoLink = demoLink || project.demoLink;
     project.featured = featured !== undefined ? featured : project.featured;
     project.order = order !== undefined ? order : project.order;
+    project.time = time || project.time;
 
     const updatedProject = await project.save();
     res.json(updatedProject);

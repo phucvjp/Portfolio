@@ -11,6 +11,7 @@ interface IProject extends mongoose.Document {
   order: number;
   createdAt: Date;
   updatedAt: Date;
+  time: string;
 }
 
 const ProjectSchema = new mongoose.Schema(
