@@ -177,7 +177,7 @@ const ProjectDetail: React.FC = () => {
                   alt={project.title}
                   sx={{
                     height: "100%",
-                    objectFit: "cover",
+                    objectFit: "contain",
                   }}
                 />
               ) : (

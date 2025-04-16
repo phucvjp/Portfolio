@@ -96,18 +96,6 @@ const Resume: React.FC = () => {
     });
   };
 
-  // Handle resume download - this is a placeholder function
-  // In a real app, you would use an API call to get the resume file
-  const handleDownload = () => {
-    // Create a fake download link to a PDF
-    const link = document.createElement("a");
-    link.href = "/resume.pdf"; // This would be a real PDF file in your public folder
-    link.download = "resume.pdf";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   if (isLoading) {
     return (
       <Container sx={{ display: "flex", justifyContent: "center", py: 8 }}>
@@ -128,18 +116,8 @@ const Resume: React.FC = () => {
             Resume
           </Typography>
           <Typography variant="subtitle1" color="text.secondary" paragraph>
-            View and download my professional resume
+            View my professional resume
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            startIcon={<DownloadIcon />}
-            onClick={handleDownload}
-            sx={{ mt: 2 }}
-          >
-            Download PDF
-          </Button>
         </Box>
 
         <Paper

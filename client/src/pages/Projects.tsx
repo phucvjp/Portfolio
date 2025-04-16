@@ -198,12 +198,38 @@ const Projects: React.FC = () => {
                         overflow: "hidden",
                       }}
                     >
-                      <CardMedia
-                        component="img"
-                        height="200"
-                        image={project.images[0] || "/placeholder-project.jpg"}
-                        alt={project.title}
-                      />
+                      {project.images && project.images.length > 0 ? (
+                        <CardMedia
+                          component="img"
+                          height="200"
+                          image={project.images[0]}
+                          alt={project.title}
+                          sx={{
+                            objectFit: "contain",
+                          }}
+                          style={{
+                            marginBottom: "8px",
+                          }}
+                        />
+                      ) : (
+                        <Box
+                          sx={{
+                            height: "200px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            bgcolor: "grey.200",
+                          }}
+                          style={{
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <Typography variant="h6" color="text.secondary">
+                            No images available
+                          </Typography>
+                        </Box>
+                      )}
+
                       <CardContent sx={{ flexGrow: 1 }}>
                         <Box
                           sx={{
