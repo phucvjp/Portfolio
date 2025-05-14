@@ -232,8 +232,8 @@ const Resume: React.FC = () => {
                         {exp.location}
                       </Typography>
                       <Typography variant="body2" color="text.secondary">
-                        {formatDate(exp.from)} -{" "}
-                        {exp.current ? "Present" : formatDate(exp.to)}
+                        {formatDate(exp.startDate)} -{" "}
+                        {exp.current ? "Present" : formatDate(exp.endDate)}
                       </Typography>
                     </Grid>
                   </Grid>
