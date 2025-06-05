@@ -92,10 +92,21 @@ interface Skill {
   featured?: boolean;
 }
 
-interface TimelineEntry {
+interface ExpTimelineEntry {
   _id: string;
   title: string;
   organization: string;
+  location?: string;
+  from: string;
+  to?: string;
+  current: boolean;
+  description: string;
+}
+
+interface EduTimelineEntry {
+  _id: string;
+  title: string;
+  institution: string;
   location?: string;
   from: string;
   to?: string;
@@ -964,8 +975,8 @@ const MessagesManager = () => {
 
 const ResumeManager = () => {
   const [skills, setSkills] = useState<Skill[]>([]);
-  const [experiences, setExperiences] = useState<TimelineEntry[]>([]);
-  const [education, setEducation] = useState<TimelineEntry[]>([]);
+  const [experiences, setExperiences] = useState<ExpTimelineEntry[]>([]);
+  const [education, setEducation] = useState<EduTimelineEntry[]>([]);
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [notification, setNotification] = useState({
@@ -1143,7 +1154,7 @@ const ResumeManager = () => {
             {education.map((edu) => (
               <ListItem key={edu._id} sx={{ pl: 0, display: "block" }}>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  {edu.title} at {edu.organization}
+                  {edu.title} at {edu.institution}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                   {new Date(edu.from).toLocaleDateString()} -

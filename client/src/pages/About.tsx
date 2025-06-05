@@ -654,7 +654,7 @@ const About: React.FC = () => {
                               {edu.title}
                             </Typography>
                             <Typography variant="subtitle1" color="secondary">
-                              {edu.organization}
+                              {edu.institution}
                             </Typography>
                             <Typography
                               variant="body2"

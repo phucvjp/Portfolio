@@ -269,7 +269,7 @@ const Resume: React.FC = () => {
                         {edu.title}
                       </Typography>
                       <Typography variant="subtitle1" color="primary">
-                        {edu.organization}
+                        {edu.institution}
                       </Typography>
                     </Grid>
                     <Grid
