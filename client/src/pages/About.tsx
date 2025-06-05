@@ -227,15 +227,7 @@ const About: React.FC = () => {
               About Me
             </Typography>
             <Typography variant="body1" paragraph>
-              {userProfile?.bio ||
-                "As a Backend Developer Intern specializing in Java, I'm excited to apply my skills in the Spring Framework within a dynamic development environment. I have hands-on experience in building robust RESTful APIs and a foundational understanding of Node.js and MongoDB, expanding my versatility as a developer. Eager to continuously learn and adapt, I'm enthusiastic about exploring new technologies and contributing creatively to real-world projects. I look forward to taking on meaningful challenges and growing through practical experience in a fast-paced, collaborative team setting."}
-            </Typography>
-            <Typography variant="body1" paragraph>
-              I specialize in developing robust, maintainable, and scalable
-              backend systems, with a strong foundation in Java and the Spring
-              Framework. My goal is to build high-quality APIs and server-side
-              logic that ensure performance, data integrity, and seamless
-              integration with frontend applications.
+              {userProfile?.bio || "Loading..."}
             </Typography>
 
             <Box sx={{ mt: 4 }}>
