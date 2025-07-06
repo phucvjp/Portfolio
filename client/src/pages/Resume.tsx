@@ -1,25 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Container,
   Typography,
   Box,
   Paper,
-  Button,
   Grid,
   Divider,
   List,
   ListItem,
-  ListItemIcon,
-  ListItemText,
   useTheme,
   alpha,
   CircularProgress,
-  Chip,
 } from "@mui/material";
-import DownloadIcon from "@mui/icons-material/Download";
-import WorkIcon from "@mui/icons-material/Work";
-import SchoolIcon from "@mui/icons-material/School";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
 import GitHubIcon from "@mui/icons-material/GitHub";

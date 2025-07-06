@@ -12,7 +12,6 @@ import {
   Skeleton,
   Divider,
   Paper,
-  IconButton,
   useTheme,
 } from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
@@ -21,37 +20,12 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { motion } from "framer-motion";
 import { useProjectById } from "../hooks/useQueries";
 
-interface Project {
-  _id: string;
-  title: string;
-  description: string;
-  images: string[];
-  technologies: string[];
-  githubLink?: string;
-  demoLink?: string;
-  featured: boolean;
-}
-
 const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
   const theme = useTheme();
 
   const { data: project, isLoading, error } = useProjectById(id || "");
-
-  const handleNextImage = () => {
-    if (project && project.images.length > 0) {
-      setCurrentImageIndex((prev) => (prev + 1) % project.images.length);
-    }
-  };
-
-  const handlePrevImage = () => {
-    if (project && project.images.length > 0) {
-      setCurrentImageIndex((prev) =>
-        prev === 0 ? project.images.length - 1 : prev - 1
-      );
-    }
-  };
 
   if (isLoading) {
     return (

@@ -18,9 +18,6 @@ import {
   useMediaQuery,
   Button,
   Grid,
-  Card,
-  CardContent,
-  CardActions,
   TextField,
   Dialog,
   DialogTitle,
@@ -173,7 +170,7 @@ const ProjectsManager = () => {
 
   useEffect(() => {
     fetchProjects();
-  }, []);
+  });
 
   const fetchProjects = async () => {
     try {
@@ -743,7 +740,7 @@ const ProfileManager = () => {
 
   useEffect(() => {
     fetchProfile();
-  }, []);
+  });
 
   const fetchProfile = async () => {
     try {

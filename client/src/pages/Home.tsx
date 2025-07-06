@@ -16,7 +16,6 @@ import {
   useTheme,
   alpha,
   useMediaQuery,
-  Avatar,
 } from "@mui/material";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { motion } from "framer-motion";
@@ -47,20 +46,11 @@ interface Skill {
 const Home: React.FC = () => {
   const theme = useTheme();
   const navigate = useNavigate();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Use React Query for data fetching
-  const {
-    data: projects = [],
-    isLoading: isLoadingProjects,
-    error: projectsError,
-  } = useProjects();
+  const { data: projects = [], isLoading: isLoadingProjects } = useProjects();
 
-  const {
-    data: skills = [],
-    isLoading: isLoadingSkills,
-    error: skillsError,
-  } = useSkills();
+  const { data: skills = [], isLoading: isLoadingSkills } = useSkills();
 
   // Filter featured projects
   const featuredProjects = (projects as Project[])
@@ -71,9 +61,6 @@ const Home: React.FC = () => {
   const topSkills = (skills as Skill[])
     .sort((a: Skill, b: Skill) => b.proficiency - a.proficiency)
     .slice(0, 6); // Show only top 6 skills
-
-  // Loading state
-  const isLoading = isLoadingProjects || isLoadingSkills;
 
   // Animation variants
   const containerVariants = {

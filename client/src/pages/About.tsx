@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Container,
   Typography,
@@ -13,7 +13,6 @@ import {
   useTheme,
   alpha,
   Link,
-  Chip,
 } from "@mui/material";
 import {
   Timeline,
@@ -53,19 +52,6 @@ interface Skill {
   category: string;
 }
 
-interface TimelineEntry {
-  _id: string;
-  title: string;
-  organization: string;
-  location?: string;
-  startDate?: string;
-  endDate?: string;
-  from?: string;
-  to?: string;
-  current: boolean;
-  description: string;
-}
-
 interface Honor {
   _id: string;
   title: string;
@@ -73,24 +59,6 @@ interface Honor {
   date: string;
   description: string;
   url?: string;
-}
-
-interface UserProfile {
-  _id: string;
-  name: string;
-  email: string;
-  profileImage?: string;
-  bio?: string;
-  socialLinks?: {
-    linkedin?: string;
-    github?: string;
-    twitter?: string;
-    website?: string;
-  };
-  contact?: {
-    phone?: string;
-    address?: string;
-  };
 }
 
 const About: React.FC = () => {

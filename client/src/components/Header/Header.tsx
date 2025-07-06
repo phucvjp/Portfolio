@@ -41,7 +41,6 @@ const Header: React.FC = () => {
 
   // Material UI theme
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   // Menu handlers
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
