@@ -62,7 +62,7 @@ const Footer: React.FC = () => {
             <IconButton
               aria-label="linkedin"
               component={Link}
-              href="https://linkedin.com/vo-xuan-phuc"
+              href="https://linkedin.com/in/vo-xuan-phuc"
               target="_blank"
               rel="noopener noreferrer"
               color="inherit"
