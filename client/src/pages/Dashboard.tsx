@@ -47,17 +47,22 @@ import {
   Save as SaveIcon,
 } from "@mui/icons-material";
 import {
-  getProjects,
-  createProject,
-  updateProject,
-  deleteProject,
   convertToBase64,
-  getUserProfile,
-  updateUserProfile,
   getSkills,
   getExperiences,
   getEducations,
+  getUserProfile,
 } from "../utils/api";
+
+// React Query hooks
+import {
+  useProjects,
+  useCreateProject,
+  useUpdateProject,
+  useDeleteProject,
+  useUserProfile,
+  useUpdateUserProfile,
+} from "../hooks/useQueries";
 
 // Context
 import { AuthContext } from "../context/AuthContext";
@@ -143,7 +148,6 @@ const DashboardHome = () => (
 
 // ProjectsManager Component
 const ProjectsManager = () => {
-  const [projects, setProjects] = useState<Project[]>([]);
   const [open, setOpen] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [currentProject, setCurrentProject] = useState<Partial<Project>>({
@@ -166,24 +170,12 @@ const ProjectsManager = () => {
     message: "",
     severity: "success" as "success" | "error",
   });
-  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    fetchProjects();
-  });
-
-  const fetchProjects = async () => {
-    try {
-      setLoading(true);
-      const data = await getProjects();
-      setProjects(data);
-    } catch (error) {
-      console.error("Error fetching projects:", error);
-      showNotification("Failed to load projects", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
+  // React Query hooks
+  const { data: projects = [], isLoading } = useProjects();
+  const createProjectMutation = useCreateProject();
+  const updateProjectMutation = useUpdateProject();
+  const deleteProjectMutation = useDeleteProject();
 
   const handleOpen = () => {
     setOpen(true);
@@ -288,7 +280,6 @@ const ProjectsManager = () => {
     e.preventDefault();
 
     try {
-      setLoading(true);
       // Prepare the project data
       const projectData = { ...currentProject };
 
@@ -302,36 +293,31 @@ const ProjectsManager = () => {
 
       // Create or update the project
       if (isEdit && currentProject._id) {
-        await updateProject(currentProject._id, projectData);
+        await updateProjectMutation.mutateAsync({
+          id: currentProject._id,
+          data: projectData,
+        });
         showNotification("Project updated successfully!", "success");
       } else {
-        await createProject(projectData);
+        await createProjectMutation.mutateAsync(projectData);
         showNotification("Project created successfully!", "success");
       }
 
-      // Refresh projects and close dialog
-      fetchProjects();
       handleClose();
     } catch (error) {
       console.error("Error saving project:", error);
       showNotification("Failed to save project", "error");
-    } finally {
-      setLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this project?")) {
       try {
-        setLoading(true);
-        await deleteProject(id);
+        await deleteProjectMutation.mutateAsync(id);
         showNotification("Project deleted successfully!", "success");
-        fetchProjects();
       } catch (error) {
         console.error("Error deleting project:", error);
         showNotification("Failed to delete project", "error");
-      } finally {
-        setLoading(false);
       }
     }
   };
@@ -351,7 +337,7 @@ const ProjectsManager = () => {
     });
   };
 
-  if (loading && projects.length === 0) {
+  if (isLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
         <CircularProgress />
@@ -388,7 +374,7 @@ const ProjectsManager = () => {
         </Typography>
       ) : (
         <List>
-          {projects.map((project) => (
+          {projects.map((project: Project) => (
             <ListItem
               key={project._id}
               divider
@@ -685,8 +671,16 @@ const ProjectsManager = () => {
             <Button
               type="submit"
               variant="contained"
-              disabled={loading}
-              startIcon={loading ? <CircularProgress size={20} /> : null}
+              disabled={
+                createProjectMutation.isPending ||
+                updateProjectMutation.isPending
+              }
+              startIcon={
+                createProjectMutation.isPending ||
+                updateProjectMutation.isPending ? (
+                  <CircularProgress size={20} />
+                ) : null
+              }
             >
               {isEdit ? "Update" : "Create"}
             </Button>
@@ -729,31 +723,23 @@ const EducationManager = () => {
 
 // ProfileManager Component
 const ProfileManager = () => {
-  const [profile, setProfile] = useState<UserProfile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
+  const [formState, setFormState] = useState<UserProfile | null>(null);
   const [notification, setNotification] = useState({
     open: false,
     message: "",
     severity: "success" as "success" | "error",
   });
 
-  useEffect(() => {
-    fetchProfile();
-  });
+  // React Query hooks
+  const { data: profile, isLoading } = useUserProfile();
+  const updateProfileMutation = useUpdateUserProfile();
 
-  const fetchProfile = async () => {
-    try {
-      setLoading(true);
-      const data = await getUserProfile();
-      setProfile(data);
-    } catch (error) {
-      console.error("Error fetching profile:", error);
-      showNotification("Failed to load profile", "error");
-    } finally {
-      setLoading(false);
+  // Initialize form state when profile data is loaded
+  React.useEffect(() => {
+    if (profile && !formState) {
+      setFormState(profile);
     }
-  };
+  }, [profile, formState]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -761,7 +747,7 @@ const ProfileManager = () => {
     // Handle nested objects
     if (name.includes(".")) {
       const [section, field] = name.split(".");
-      setProfile((prev) => {
+      setFormState((prev) => {
         if (!prev) return prev;
 
         const sectionObj = prev[section as keyof UserProfile];
@@ -777,7 +763,7 @@ const ProfileManager = () => {
         return prev;
       });
     } else {
-      setProfile((prev) => {
+      setFormState((prev) => {
         if (!prev) return prev;
         return { ...prev, [name]: value };
       });
@@ -786,17 +772,14 @@ const ProfileManager = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!profile) return;
+    if (!formState) return;
 
     try {
-      setSaving(true);
-      await updateUserProfile(profile);
+      await updateProfileMutation.mutateAsync(formState);
       showNotification("Profile updated successfully!", "success");
     } catch (error) {
       console.error("Error updating profile:", error);
       showNotification("Failed to update profile", "error");
-    } finally {
-      setSaving(false);
     }
   };
 
@@ -815,7 +798,7 @@ const ProfileManager = () => {
     });
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
         <CircularProgress />
@@ -823,7 +806,7 @@ const ProfileManager = () => {
     );
   }
 
-  if (!profile) {
+  if (!formState) {
     return (
       <Box sx={{ textAlign: "center", py: 4 }}>
         <Typography>Profile not found</Typography>
@@ -848,7 +831,7 @@ const ProfileManager = () => {
                 fullWidth
                 label="Name"
                 name="name"
-                value={profile.name}
+                value={formState.name}
                 onChange={handleChange}
                 margin="normal"
               />
@@ -858,7 +841,7 @@ const ProfileManager = () => {
                 fullWidth
                 label="Email"
                 name="email"
-                value={profile.email}
+                value={formState.email}
                 onChange={handleChange}
                 margin="normal"
                 disabled // Email is usually not changed easily
@@ -869,7 +852,7 @@ const ProfileManager = () => {
                 fullWidth
                 label="Bio"
                 name="bio"
-                value={profile.bio || ""}
+                value={formState.bio || ""}
                 onChange={handleChange}
                 margin="normal"
                 multiline
@@ -889,7 +872,7 @@ const ProfileManager = () => {
                 fullWidth
                 label="Phone"
                 name="contact.phone"
-                value={profile.contact?.phone || ""}
+                value={formState.contact?.phone || ""}
                 onChange={handleChange}
                 margin="normal"
               />
@@ -899,7 +882,7 @@ const ProfileManager = () => {
                 fullWidth
                 label="Address"
                 name="contact.address"
-                value={profile.contact?.address || ""}
+                value={formState.contact?.address || ""}
                 onChange={handleChange}
                 margin="normal"
               />
@@ -917,7 +900,7 @@ const ProfileManager = () => {
                 fullWidth
                 label="LinkedIn"
                 name="socialLinks.linkedin"
-                value={profile.socialLinks?.linkedin || ""}
+                value={formState.socialLinks?.linkedin || ""}
                 onChange={handleChange}
                 margin="normal"
               />
@@ -927,7 +910,7 @@ const ProfileManager = () => {
                 fullWidth
                 label="GitHub"
                 name="socialLinks.github"
-                value={profile.socialLinks?.github || ""}
+                value={formState.socialLinks?.github || ""}
                 onChange={handleChange}
                 margin="normal"
               />
@@ -940,8 +923,14 @@ const ProfileManager = () => {
             type="submit"
             variant="contained"
             color="primary"
-            disabled={saving}
-            startIcon={saving ? <CircularProgress size={20} /> : <SaveIcon />}
+            disabled={updateProfileMutation.isPending}
+            startIcon={
+              updateProfileMutation.isPending ? (
+                <CircularProgress size={20} />
+              ) : (
+                <SaveIcon />
+              )
+            }
           >
             Save Changes
           </Button>
