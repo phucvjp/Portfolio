@@ -7,23 +7,24 @@ import {
   Card,
   CardContent,
   CardMedia,
-  CardActions,
   Button,
   Chip,
   Box,
   TextField,
-  MenuItem,
   InputAdornment,
   LinearProgress,
   useTheme,
   alpha,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import GitHubIcon from "@mui/icons-material/GitHub";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { motion } from "framer-motion";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import { motion, AnimatePresence } from "framer-motion";
 import { useProjects } from "../hooks/useQueries";
 
-// Types
 interface Project {
   _id: string;
   title: string;
@@ -35,314 +36,521 @@ interface Project {
   featured: boolean;
 }
 
+const COLLAPSED_CHIP_COUNT = 8;
+
+function shuffleArray<T>(arr: T[]): T[] {
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 const Projects: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [techFilter, setTechFilter] = useState("All");
-  const [availableTechs, setAvailableTechs] = useState<string[]>([]);
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
 
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const navigate = useNavigate();
   const { data: projects = [], isLoading } = useProjects();
 
-  // Extract all unique technologies for the filter
-  React.useEffect(() => {
-    const allTechs = new Set<string>();
-    projects.forEach((project: Project) => {
-      project.technologies.forEach((tech) => allTechs.add(tech));
-    });
-    setAvailableTechs(Array.from(allTechs).sort());
+  const allTechs = React.useMemo(() => {
+    const techs = new Set<string>();
+    projects.forEach((p: Project) =>
+      p.technologies.forEach((t) => techs.add(t))
+    );
+    return shuffleArray(Array.from(techs));
   }, [projects]);
 
-  // Filter projects when search or filter changes
   const filteredProjects = React.useMemo(() => {
     return projects.filter((project: Project) => {
-      // Apply technology filter
       const techMatch =
         techFilter === "All" || project.technologies.includes(techFilter);
-
-      // Apply search term filter (case insensitive)
       const searchLower = searchTerm.toLowerCase();
       const titleMatch = project.title.toLowerCase().includes(searchLower);
       const descMatch = project.description.toLowerCase().includes(searchLower);
-      const techsMatch = project.technologies.some((tech) =>
-        tech.toLowerCase().includes(searchLower)
+      const techsMatch = project.technologies.some((t) =>
+        t.toLowerCase().includes(searchLower)
       );
-
       return techMatch && (titleMatch || descMatch || techsMatch);
     });
   }, [searchTerm, techFilter, projects]);
 
-  // Handle search input change
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-  };
-
-  // Handle tech filter change
-  const handleTechFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTechFilter(e.target.value);
-  };
-
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.08 },
     },
   };
 
   const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 30, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
-      transition: {
-        duration: 0.5,
-      },
+      transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
     },
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Typography
-          variant="h3"
-          component="h1"
-          gutterBottom
-          align="center"
-          mb={6}
-        >
-          My Projects
-        </Typography>
+        <Box sx={{ textAlign: "center", mb: 8 }}>
+          <Chip
+            label="Portfolio"
+            size="small"
+            sx={{
+              mb: 2,
+              background: alpha(theme.palette.primary.main, 0.1),
+              color: theme.palette.primary.main,
+              border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+              fontWeight: 500,
+            }}
+          />
+          <Typography variant="h3" component="h1" sx={{ mb: 2 }}>
+            My Projects
+          </Typography>
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{ maxWidth: 500, mx: "auto" }}
+          >
+            Explore my work spanning web applications, APIs, and more.
+          </Typography>
+        </Box>
       </motion.div>
 
-      {/* Filters */}
+      {/* Search & Filter */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+        transition={{ duration: 0.5, delay: 0.15 }}
       >
-        <Grid container spacing={2} sx={{ mb: 4 }}>
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              placeholder="Search projects..."
-              value={searchTerm}
-              onChange={handleSearchChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <TextField
-              select
-              fullWidth
-              variant="outlined"
-              value={techFilter}
-              onChange={handleTechFilterChange}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <FilterListIcon />
-                  </InputAdornment>
-                ),
+        <Box sx={{ mb: 3 }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Search projects..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon sx={{ color: theme.palette.text.secondary }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{ mb: 3 }}
+          />
+
+          <Box
+            sx={{
+              p: 2,
+              borderRadius: 3,
+              border: `1px solid ${alpha(
+                isDark ? "#fff" : "#000",
+                0.08
+              )}`,
+              background: isDark
+                ? alpha("#1e1e3f", 0.4)
+                : alpha("#f8fafc", 0.6),
+            }}
+          >
+            {/* Filter header with toggle */}
+            <Box
+              onClick={() => setFiltersExpanded((prev) => !prev)}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                cursor: "pointer",
+                userSelect: "none",
+                mb: filtersExpanded || allTechs.length <= COLLAPSED_CHIP_COUNT ? 0 : 0,
               }}
             >
-              <MenuItem value="All">All Technologies</MenuItem>
-              {availableTechs.map((tech) => (
-                <MenuItem key={tech} value={tech}>
-                  {tech}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-        </Grid>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <FilterListIcon
+                  sx={{
+                    fontSize: 20,
+                    color: theme.palette.primary.main,
+                  }}
+                />
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontWeight: 600, color: theme.palette.text.secondary }}
+                >
+                  Filter by Technology
+                </Typography>
+                {techFilter !== "All" && (
+                  <Chip
+                    label={techFilter}
+                    size="small"
+                    onDelete={() => setTechFilter("All")}
+                    sx={{
+                      height: 24,
+                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                      color: "#fff",
+                      "& .MuiChip-deleteIcon": {
+                        color: "rgba(255,255,255,0.7)",
+                        fontSize: 16,
+                        "&:hover": { color: "#fff" },
+                      },
+                    }}
+                  />
+                )}
+              </Box>
+              {allTechs.length > COLLAPSED_CHIP_COUNT && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 0.5,
+                    color: theme.palette.text.secondary,
+                    fontSize: "0.8rem",
+                  }}
+                >
+                  <Typography variant="caption" sx={{ fontWeight: 500 }}>
+                    {filtersExpanded
+                      ? "Show less"
+                      : `+${allTechs.length - COLLAPSED_CHIP_COUNT} more`}
+                  </Typography>
+                  {filtersExpanded ? (
+                    <ExpandLessIcon sx={{ fontSize: 18 }} />
+                  ) : (
+                    <ExpandMoreIcon sx={{ fontSize: 18 }} />
+                  )}
+                </Box>
+              )}
+            </Box>
+
+            {/* Chips */}
+            <AnimatePresence initial={false}>
+              <motion.div
+                key={filtersExpanded ? "expanded" : "collapsed"}
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeInOut" }}
+                style={{ overflow: "hidden" }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 0.75,
+                    pt: 1.5,
+                  }}
+                >
+                  <Chip
+                    label="All"
+                    onClick={() => setTechFilter("All")}
+                    variant={techFilter === "All" ? "filled" : "outlined"}
+                    size="small"
+                    sx={{
+                      ...(techFilter === "All" && {
+                        background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                        color: "#fff",
+                        "&:hover": {
+                          background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
+                        },
+                      }),
+                    }}
+                  />
+                  {(filtersExpanded
+                    ? allTechs
+                    : allTechs.slice(0, COLLAPSED_CHIP_COUNT)
+                  ).map((tech) => (
+                    <Chip
+                      key={tech}
+                      label={tech}
+                      onClick={() => setTechFilter(tech)}
+                      variant={techFilter === tech ? "filled" : "outlined"}
+                      size="small"
+                      sx={{
+                        ...(techFilter === tech && {
+                          background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                          color: "#fff",
+                          "&:hover": {
+                            background: `linear-gradient(135deg, ${theme.palette.primary.dark}, ${theme.palette.secondary.dark})`,
+                          },
+                        }),
+                      }}
+                    />
+                  ))}
+                </Box>
+              </motion.div>
+            </AnimatePresence>
+          </Box>
+        </Box>
       </motion.div>
 
-      {/* Projects */}
+      {/* Projects Grid */}
       {isLoading ? (
-        <LinearProgress />
+        <LinearProgress
+          sx={{
+            borderRadius: 2,
+            background: alpha(theme.palette.primary.main, 0.1),
+            "& .MuiLinearProgress-bar": {
+              background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+            },
+          }}
+        />
       ) : (
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {filteredProjects.length > 0 ? (
-            <Grid container spacing={4}>
-              {filteredProjects.map((project: Project) => (
-                <Grid item xs={12} sm={6} md={4} key={project._id}>
-                  <motion.div variants={itemVariants}>
-                    <Card
-                      sx={{
-                        height: "100%",
-                        display: "flex",
-                        flexDirection: "column",
-                        transition: "all 0.3s ease-in-out",
-                        "&:hover": {
-                          transform: "translateY(-8px)",
-                          boxShadow: 8,
-                        },
-                        overflow: "hidden",
-                      }}
-                    >
-                      {project.images && project.images.length > 0 ? (
-                        <CardMedia
-                          component="img"
-                          height="200"
-                          image={project.images[0]}
-                          alt={project.title}
-                          sx={{
-                            objectFit: "contain",
-                          }}
-                          style={{
-                            marginBottom: "8px",
-                          }}
-                        />
-                      ) : (
-                        <Box
-                          sx={{
-                            height: "200px",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            bgcolor: "grey.200",
-                          }}
-                          style={{
-                            marginBottom: "8px",
-                          }}
-                        >
-                          <Typography variant="h6" color="text.secondary">
-                            No images available
-                          </Typography>
-                        </Box>
-                      )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={techFilter + searchTerm}
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {filteredProjects.length > 0 ? (
+              <Grid container spacing={4}>
+                {filteredProjects.map((project: Project) => (
+                  <Grid item xs={12} sm={6} md={4} key={project._id}>
+                    <motion.div variants={itemVariants} layout>
+                      <Card
+                        sx={{
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          cursor: "pointer",
+                          "&:hover": {
+                            transform: "translateY(-8px)",
+                            boxShadow: `0 20px 40px ${alpha(
+                              theme.palette.primary.main,
+                              isDark ? 0.15 : 0.1
+                            )}`,
+                            "& .project-image": {
+                              transform: "scale(1.05)",
+                            },
+                          },
+                          overflow: "hidden",
+                        }}
+                        onClick={() => navigate(`/projects/${project._id}`)}
+                      >
+                        <Box sx={{ overflow: "hidden", position: "relative" }}>
+                          {project.images && project.images.length > 0 ? (
+                            <CardMedia
+                              className="project-image"
+                              component="img"
+                              height="220"
+                              image={project.images[0]}
+                              alt={project.title}
+                              sx={{
+                                transition: "transform 0.4s ease",
+                                objectFit: "cover",
+                              }}
+                            />
+                          ) : (
+                            <Box
+                              sx={{
+                                height: 220,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                background: `linear-gradient(135deg, ${alpha(
+                                  theme.palette.primary.main,
+                                  0.08
+                                )}, ${alpha(
+                                  theme.palette.secondary.main,
+                                  0.08
+                                )})`,
+                              }}
+                            >
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                              >
+                                No preview
+                              </Typography>
+                            </Box>
+                          )}
 
-                      <CardContent sx={{ flexGrow: 1 }}>
-                        <Box
-                          sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "flex-start",
-                          }}
-                        >
-                          <Typography gutterBottom variant="h5" component="h2">
-                            {project.title}
-                          </Typography>
+                          {/* Featured badge */}
                           {project.featured && (
                             <Chip
                               label="Featured"
                               size="small"
-                              color="primary"
-                              sx={{ ml: 1 }}
+                              sx={{
+                                position: "absolute",
+                                top: 12,
+                                left: 12,
+                                background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                                color: "#fff",
+                                fontWeight: 600,
+                                fontSize: "0.7rem",
+                              }}
                             />
                           )}
-                        </Box>
-                        <Typography
-                          variant="body2"
-                          color="text.secondary"
-                          component="div"
-                          sx={{ minHeight: "80px", overflow: "hidden" }}
-                          dangerouslySetInnerHTML={{
-                            __html:
-                              project.description.length > 120
-                                ? `${project.description.substring(0, 120)}...`
-                                : project.description,
-                          }}
-                        />
-                        <Box
-                          sx={{
-                            mt: 2,
-                            display: "flex",
-                            flexWrap: "wrap",
-                            gap: 0.5,
-                          }}
-                        >
-                          {project.technologies.map((tech) => (
-                            <Chip
-                              key={`${project._id}-${tech}`}
-                              label={tech}
-                              size="small"
-                              variant="outlined"
-                              sx={{ mr: 0.5, mb: 0.5 }}
-                              onClick={() => setTechFilter(tech)}
-                            />
-                          ))}
-                        </Box>
-                      </CardContent>
-                      <CardActions sx={{ p: 2, pt: 0 }}>
-                        <Button
-                          size="small"
-                          color="primary"
-                          onClick={() => navigate(`/projects/${project._id}`)}
-                        >
-                          View Details
-                        </Button>
-                        {project.demoLink && (
-                          <Button
-                            size="small"
-                            color="secondary"
-                            href={project.demoLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
+
+                          {/* Action icons */}
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              top: 12,
+                              right: 12,
+                              display: "flex",
+                              gap: 1,
+                            }}
                           >
-                            Live Demo
-                          </Button>
-                        )}
-                        {project.githubLink && (
-                          <Button
-                            size="small"
-                            href={project.githubLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            {project.demoLink && (
+                              <Box
+                                component="a"
+                                href={project.demoLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e: React.MouseEvent) =>
+                                  e.stopPropagation()
+                                }
+                                sx={{
+                                  width: 34,
+                                  height: 34,
+                                  borderRadius: "50%",
+                                  background: alpha("#000", 0.5),
+                                  backdropFilter: "blur(10px)",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  color: "#fff",
+                                  transition: "all 0.2s",
+                                  "&:hover": {
+                                    background: theme.palette.primary.main,
+                                  },
+                                }}
+                              >
+                                <OpenInNewIcon sx={{ fontSize: 16 }} />
+                              </Box>
+                            )}
+                            {project.githubLink && (
+                              <Box
+                                component="a"
+                                href={project.githubLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={(e: React.MouseEvent) =>
+                                  e.stopPropagation()
+                                }
+                                sx={{
+                                  width: 34,
+                                  height: 34,
+                                  borderRadius: "50%",
+                                  background: alpha("#000", 0.5),
+                                  backdropFilter: "blur(10px)",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  color: "#fff",
+                                  transition: "all 0.2s",
+                                  "&:hover": {
+                                    background: theme.palette.primary.main,
+                                  },
+                                }}
+                              >
+                                <GitHubIcon sx={{ fontSize: 16 }} />
+                              </Box>
+                            )}
+                          </Box>
+                        </Box>
+
+                        <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                          <Typography
+                            variant="h6"
+                            sx={{ mb: 1, fontWeight: 600 }}
                           >
-                            GitHub
-                          </Button>
-                        )}
-                      </CardActions>
-                    </Card>
-                  </motion.div>
-                </Grid>
-              ))}
-            </Grid>
-          ) : (
-            <Box
-              sx={{
-                textAlign: "center",
-                p: 6,
-                backgroundColor: alpha(theme.palette.primary.main, 0.05),
-                borderRadius: 2,
-              }}
-            >
-              <Typography variant="h6" color="text.secondary">
-                No projects found matching your criteria.
-              </Typography>
-              <Button
-                variant="outlined"
-                color="primary"
-                sx={{ mt: 2 }}
-                onClick={() => {
-                  setSearchTerm("");
-                  setTechFilter("All");
+                            {project.title}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            component="div"
+                            sx={{
+                              mb: 2,
+                              lineHeight: 1.6,
+                              display: "-webkit-box",
+                              WebkitLineClamp: 3,
+                              WebkitBoxOrient: "vertical",
+                              overflow: "hidden",
+                            }}
+                            dangerouslySetInnerHTML={{
+                              __html:
+                                project.description.length > 120
+                                  ? `${project.description.substring(0, 120)}...`
+                                  : project.description,
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: 0.75,
+                            }}
+                          >
+                            {project.technologies.slice(0, 4).map((tech) => (
+                              <Chip
+                                key={`${project._id}-${tech}`}
+                                label={tech}
+                                size="small"
+                                variant="outlined"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setTechFilter(tech);
+                                }}
+                              />
+                            ))}
+                            {project.technologies.length > 4 && (
+                              <Chip
+                                label={`+${project.technologies.length - 4}`}
+                                size="small"
+                                sx={{
+                                  background: alpha(
+                                    theme.palette.primary.main,
+                                    0.1
+                                  ),
+                                  color: theme.palette.primary.main,
+                                }}
+                              />
+                            )}
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  </Grid>
+                ))}
+              </Grid>
+            ) : (
+              <Box
+                sx={{
+                  textAlign: "center",
+                  p: 8,
+                  borderRadius: 3,
+                  background: alpha(theme.palette.primary.main, 0.03),
+                  border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
                 }}
               >
-                Clear Filters
-              </Button>
-            </Box>
-          )}
-        </motion.div>
+                <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+                  No projects found
+                </Typography>
+                <Button
+                  variant="outlined"
+                  onClick={() => {
+                    setSearchTerm("");
+                    setTechFilter("All");
+                  }}
+                >
+                  Clear Filters
+                </Button>
+              </Box>
+            )}
+          </motion.div>
+        </AnimatePresence>
       )}
     </Container>
   );

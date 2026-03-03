@@ -95,10 +95,10 @@ const Login: React.FC = () => {
         >
           <Box
             sx={{
-              width: 40,
-              height: 40,
-              borderRadius: "50%",
-              bgcolor: theme.palette.primary.main,
+              width: 48,
+              height: 48,
+              borderRadius: "14px",
+              background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",

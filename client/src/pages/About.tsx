@@ -10,6 +10,7 @@ import {
   Divider,
   LinearProgress,
   Paper,
+  Chip,
   useTheme,
   alpha,
   Link,
@@ -34,7 +35,6 @@ import EmailIcon from "@mui/icons-material/Email";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import { motion } from "framer-motion";
 
-// React Query hooks
 import {
   useUserProfile,
   useSkills,
@@ -43,7 +43,6 @@ import {
   useHonors,
 } from "../hooks/useQueries";
 
-// Types
 interface Skill {
   _id: string;
   name: string;
@@ -63,21 +62,16 @@ interface Honor {
 
 const About: React.FC = () => {
   const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
-  // Use React Query for data fetching
   const { data: userProfile, isLoading: isLoadingProfile } = useUserProfile();
-
   const { data: skills = [], isLoading: isLoadingSkills } = useSkills();
-
   const { data: experiences = [], isLoading: isLoadingExperiences } =
     useExperiences();
-
   const { data: education = [], isLoading: isLoadingEducation } =
     useEducations();
-
   const { data: honors = [], isLoading: isLoadingHonors } = useHonors();
 
-  // Overall loading state
   const isLoading =
     isLoadingProfile ||
     isLoadingSkills ||
@@ -85,20 +79,15 @@ const About: React.FC = () => {
     isLoadingEducation ||
     isLoadingHonors;
 
-  // Group skills by category
   const skillsByCategory = (skills as Skill[]).reduce((acc, skill) => {
-    if (!acc[skill.category]) {
-      acc[skill.category] = [];
-    }
+    if (!acc[skill.category]) acc[skill.category] = [];
     acc[skill.category].push(skill);
     return acc;
   }, {} as Record<string, Skill[]>);
 
-  // Format date
   const formatDate = (dateString?: string | null, current?: boolean) => {
     if (current) return "Present";
     if (!dateString) return "";
-
     const date = new Date(dateString);
     return date.toLocaleDateString("en-US", {
       year: "numeric",
@@ -106,14 +95,33 @@ const About: React.FC = () => {
     });
   };
 
-  // Animation variants
+  const proficiencyLabel = (level: number) => {
+    const labels: Record<number, string> = {
+      1: "Beginner",
+      2: "Intermediate",
+      3: "Advanced",
+      4: "Professional",
+      5: "Master",
+    };
+    return labels[level] || "";
+  };
+
+  const proficiencyColor = (level: number) => {
+    const colors: Record<number, string> = {
+      1: "#94a3b8",
+      2: "#38bdf8",
+      3: "#6366f1",
+      4: "#a855f7",
+      5: "#f59e0b",
+    };
+    return colors[level] || theme.palette.primary.main;
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
@@ -122,67 +130,144 @@ const About: React.FC = () => {
     visible: {
       y: 0,
       opacity: 1,
-      transition: {
-        duration: 0.5,
-      },
+      transition: { duration: 0.5, ease: [0.25, 0.46, 0.45, 0.94] },
     },
   };
 
+  const sectionHeader = (label: string, title: string) => (
+    <Box sx={{ textAlign: "center", mb: 6 }}>
+      <Chip
+        label={label}
+        size="small"
+        sx={{
+          mb: 2,
+          background: alpha(theme.palette.primary.main, 0.1),
+          color: theme.palette.primary.main,
+          border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+          fontWeight: 500,
+        }}
+      />
+      <Typography variant="h4">{title}</Typography>
+    </Box>
+  );
+
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
       {/* About Me Section */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <Grid container spacing={6} sx={{ mb: 8 }}>
+        <Grid container spacing={6} sx={{ mb: 10 }}>
           <Grid item xs={12} md={4}>
-            <Box sx={{ textAlign: "center" }}>
-              <Avatar
-                alt={userProfile?.name || "Profile"}
-                src={userProfile?.profileImage || "/placeholder-avatar.jpg"}
+            <Box sx={{ textAlign: "center", position: "sticky", top: 100 }}>
+              <Box
                 sx={{
-                  width: { xs: 200, md: 250 },
-                  height: { xs: 200, md: 250 },
-                  mx: "auto",
+                  position: "relative",
+                  display: "inline-block",
                   mb: 3,
-                  boxShadow: 4,
-                  border: `4px solid ${theme.palette.primary.main}`,
                 }}
-              />
-              <Typography variant="h4" component="h1" gutterBottom>
+              >
+                <Box
+                  sx={{
+                    position: "absolute",
+                    inset: -6,
+                    borderRadius: "50%",
+                    background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    opacity: 0.2,
+                    animation: "pulse-glow 3s ease-in-out infinite",
+                  }}
+                />
+                <Avatar
+                  alt={userProfile?.name || "Profile"}
+                  src={userProfile?.profileImage || "/placeholder-avatar.jpg"}
+                  sx={{
+                    width: { xs: 180, md: 220 },
+                    height: { xs: 180, md: 220 },
+                    border: `3px solid ${alpha(theme.palette.primary.main, 0.3)}`,
+                    position: "relative",
+                  }}
+                />
+              </Box>
+              <Typography variant="h4" gutterBottom>
                 {userProfile?.name || "Loading..."}
               </Typography>
-              <Typography variant="h6" color="primary" gutterBottom>
+              <Typography
+                variant="h6"
+                sx={{
+                  background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  fontWeight: 600,
+                  mb: 2,
+                }}
+              >
                 Full Stack Developer
               </Typography>
 
               {userProfile?.socialLinks && (
                 <Box
                   sx={{
-                    mt: 2,
                     display: "flex",
                     justifyContent: "center",
-                    gap: 2,
+                    gap: 1.5,
+                    mt: 2,
                   }}
                 >
                   {userProfile.socialLinks.linkedin && (
                     <Link
                       href={userProfile.socialLinks.linkedin}
                       target="_blank"
-                      color="inherit"
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: "10px",
+                        border: `1px solid ${alpha(
+                          isDark ? "#fff" : "#000",
+                          0.1
+                        )}`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: theme.palette.text.secondary,
+                        transition: "all 0.2s",
+                        "&:hover": {
+                          color: theme.palette.primary.main,
+                          borderColor: alpha(theme.palette.primary.main, 0.4),
+                          background: alpha(theme.palette.primary.main, 0.08),
+                        },
+                      }}
                     >
-                      <LinkedInIcon fontSize="large" />
+                      <LinkedInIcon fontSize="small" />
                     </Link>
                   )}
                   {userProfile.socialLinks.github && (
                     <Link
                       href={userProfile.socialLinks.github}
                       target="_blank"
-                      color="inherit"
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: "10px",
+                        border: `1px solid ${alpha(
+                          isDark ? "#fff" : "#000",
+                          0.1
+                        )}`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: theme.palette.text.secondary,
+                        transition: "all 0.2s",
+                        "&:hover": {
+                          color: theme.palette.primary.main,
+                          borderColor: alpha(theme.palette.primary.main, 0.4),
+                          background: alpha(theme.palette.primary.main, 0.08),
+                        },
+                      }}
                     >
-                      <GitHubIcon fontSize="large" />
+                      <GitHubIcon fontSize="small" />
                     </Link>
                   )}
                 </Box>
@@ -191,129 +276,164 @@ const About: React.FC = () => {
           </Grid>
 
           <Grid item xs={12} md={8}>
-            <Typography variant="h4" component="h2" gutterBottom>
+            <Chip
+              label="About"
+              size="small"
+              sx={{
+                mb: 2,
+                background: alpha(theme.palette.primary.main, 0.1),
+                color: theme.palette.primary.main,
+                border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+                fontWeight: 500,
+              }}
+            />
+            <Typography variant="h4" sx={{ mb: 3 }}>
               About Me
             </Typography>
-            <Typography variant="body1" paragraph>
+            <Typography
+              variant="body1"
+              color="text.secondary"
+              sx={{ lineHeight: 1.8, mb: 4 }}
+            >
               {userProfile?.bio || "Loading..."}
             </Typography>
 
-            <Box sx={{ mt: 4 }}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Card
-                    elevation={0}
-                    sx={{
-                      backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                    }}
-                  >
-                    <CardContent sx={{ display: "flex", alignItems: "center" }}>
-                      <EmailIcon sx={{ mr: 1 }} />
-                      <Box>
-                        <Typography variant="subtitle1" fontWeight="bold">
-                          Email
-                        </Typography>
-                        <Typography variant="body2">
-                          {userProfile?.email || "Loading..."}
-                        </Typography>
-                      </Box>
-                    </CardContent>
-                  </Card>
-                </Grid>
-                {userProfile?.contact?.phone && (
-                  <Grid item xs={12} sm={6}>
+            <Grid container spacing={2}>
+              {[
+                {
+                  icon: <EmailIcon />,
+                  title: "Email",
+                  value: userProfile?.email,
+                },
+                {
+                  icon: <PhoneIcon />,
+                  title: "Phone",
+                  value: userProfile?.contact?.phone,
+                },
+                {
+                  icon: <LocationOnIcon />,
+                  title: "Address",
+                  value: userProfile?.contact?.address,
+                },
+              ]
+                .filter((item) => item.value)
+                .map((item, idx) => (
+                  <Grid item xs={12} sm={6} key={idx}>
                     <Card
                       elevation={0}
                       sx={{
-                        backgroundColor: alpha(theme.palette.primary.main, 0.1),
+                        p: 0,
+                        "&:hover": {
+                          borderColor: alpha(theme.palette.primary.main, 0.3),
+                        },
                       }}
                     >
                       <CardContent
-                        sx={{ display: "flex", alignItems: "center" }}
+                        sx={{ display: "flex", alignItems: "center", gap: 2 }}
                       >
-                        <PhoneIcon sx={{ mr: 1 }} />
+                        <Box
+                          sx={{
+                            width: 42,
+                            height: 42,
+                            borderRadius: "10px",
+                            background: alpha(theme.palette.primary.main, 0.1),
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            color: theme.palette.primary.main,
+                            flexShrink: 0,
+                          }}
+                        >
+                          {item.icon}
+                        </Box>
                         <Box>
-                          <Typography variant="subtitle1" fontWeight="bold">
-                            Phone
+                          <Typography
+                            variant="caption"
+                            color="text.secondary"
+                            sx={{ display: "block" }}
+                          >
+                            {item.title}
                           </Typography>
-                          <Typography variant="body2">
-                            {userProfile.contact.phone}
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {item.value}
                           </Typography>
                         </Box>
                       </CardContent>
                     </Card>
                   </Grid>
-                )}
-                {userProfile?.contact?.address && (
-                  <Grid item xs={12}>
-                    <Card
-                      elevation={0}
-                      sx={{
-                        backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                      }}
-                    >
-                      <CardContent
-                        sx={{ display: "flex", alignItems: "center" }}
-                      >
-                        <LocationOnIcon sx={{ mr: 1 }} />
-                        <Box>
-                          <Typography variant="subtitle1" fontWeight="bold">
-                            Address
-                          </Typography>
-                          <Typography variant="body2">
-                            {userProfile.contact.address}
-                          </Typography>
-                        </Box>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                )}
-              </Grid>
-            </Box>
+                ))}
+            </Grid>
           </Grid>
         </Grid>
       </motion.div>
 
-      <Divider sx={{ my: 6 }} />
-
       {/* Skills Section */}
-      <Box sx={{ mb: 8 }}>
+      <Box sx={{ mb: 10 }}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
         >
-          <Typography
-            variant="h4"
-            component="h2"
-            gutterBottom
-            align="center"
-            sx={{ mb: 6 }}
-          >
-            Technical Skills
-          </Typography>
+          {sectionHeader("Expertise", "Technical Skills")}
         </motion.div>
 
         {isLoading ? (
-          <LinearProgress />
+          <LinearProgress
+            sx={{
+              borderRadius: 2,
+              background: alpha(theme.palette.primary.main, 0.1),
+              "& .MuiLinearProgress-bar": {
+                background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+              },
+            }}
+          />
         ) : (
           <motion.div
             variants={containerVariants}
             initial="hidden"
-            animate="visible"
+            whileInView="visible"
+            viewport={{ once: true }}
           >
             <Grid container spacing={4}>
               {Object.entries(skillsByCategory)
-                .sort(([, a], [, b]) => b.length - a.length) // Sort by the length of skill arrays
+                .sort(([, a], [, b]) => b.length - a.length)
                 .map(([category, categorySkills]) => (
                   <Grid item xs={12} md={4} key={category}>
                     <motion.div variants={itemVariants}>
-                      <Paper elevation={2} sx={{ p: 3, height: "100%" }}>
+                      <Card sx={{ p: 3, height: "100%" }}>
                         <Box
-                          sx={{ display: "flex", alignItems: "center", mb: 3 }}
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: 1.5,
+                            mb: 3,
+                          }}
                         >
-                          <CodeIcon color="primary" sx={{ mr: 1 }} />
-                          <Typography variant="h6">{category}</Typography>
+                          <Box
+                            sx={{
+                              width: 36,
+                              height: 36,
+                              borderRadius: "10px",
+                              background: alpha(
+                                theme.palette.primary.main,
+                                0.1
+                              ),
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <CodeIcon
+                              sx={{
+                                color: theme.palette.primary.main,
+                                fontSize: 20,
+                              }}
+                            />
+                          </Box>
+                          <Typography variant="h6" sx={{ fontSize: "1rem" }}>
+                            {category}
+                          </Typography>
                         </Box>
                         <Box
                           sx={{
@@ -323,66 +443,92 @@ const About: React.FC = () => {
                           }}
                         >
                           {categorySkills.map((skill) => (
-                            <React.Fragment key={skill._id}>
-                              <Box>
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    mb: 0.5,
-                                  }}
-                                >
-                                  <Avatar
-                                    variant="rounded"
-                                    sx={{
-                                      width: 24,
-                                      height: 24,
-                                      backgroundColor: alpha(
-                                        theme.palette.primary.main,
-                                        0.1
-                                      ),
-                                      color: theme.palette.primary.main,
-                                      mr: 1,
-                                    }}
+                            <Box
+                              key={skill._id}
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                pb: 1.5,
+                                borderBottom: `1px solid ${alpha(
+                                  isDark ? "#fff" : "#000",
+                                  0.06
+                                )}`,
+                                "&:last-child": { borderBottom: "none", pb: 0 },
+                              }}
+                            >
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 1.5,
+                                }}
+                              >
+                                {skill.icon ? (
+                                  <img
                                     src={skill.icon}
+                                    alt={skill.name}
+                                    style={{
+                                      width: 22,
+                                      height: 22,
+                                      objectFit: "contain",
+                                    }}
+                                  />
+                                ) : (
+                                  <Box
+                                    sx={{
+                                      width: 22,
+                                      height: 22,
+                                      borderRadius: "6px",
+                                      background: alpha(
+                                        proficiencyColor(skill.proficiency),
+                                        0.15
+                                      ),
+                                      display: "flex",
+                                      alignItems: "center",
+                                      justifyContent: "center",
+                                    }}
                                   >
-                                    {skill.icon ? null : skill.name.charAt(0)}
-                                  </Avatar>
-                                  <Typography variant="body2">
-                                    {skill.name}
-                                  </Typography>
-                                  {skill?.proficiency && (
                                     <Typography
-                                      variant="body2"
-                                      color="text.secondary"
                                       sx={{
-                                        fontWeight: "medium",
-                                        display: "inline-block",
-                                        px: 1.5,
-                                        py: 0.5,
-                                        borderRadius: 1,
-                                        backgroundColor: alpha(
-                                          theme.palette.primary.main,
-                                          0.1
+                                        fontSize: "0.65rem",
+                                        fontWeight: 700,
+                                        color: proficiencyColor(
+                                          skill.proficiency
                                         ),
                                       }}
                                     >
-                                      {skill.proficiency === 1 && "Beginner"}
-                                      {skill.proficiency === 2 &&
-                                        "Intermediate"}
-                                      {skill.proficiency === 3 && "Advanced"}
-                                      {skill.proficiency === 4 &&
-                                        "Professional"}
-                                      {skill.proficiency === 5 && "Master"}
+                                      {skill.name.charAt(0)}
                                     </Typography>
-                                  )}
-                                </Box>
+                                  </Box>
+                                )}
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: 500 }}
+                                >
+                                  {skill.name}
+                                </Typography>
                               </Box>
-                              <Divider />
-                            </React.Fragment>
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  fontWeight: 600,
+                                  color: proficiencyColor(skill.proficiency),
+                                  px: 1,
+                                  py: 0.25,
+                                  borderRadius: 1,
+                                  background: alpha(
+                                    proficiencyColor(skill.proficiency),
+                                    0.08
+                                  ),
+                                }}
+                              >
+                                {proficiencyLabel(skill.proficiency)}
+                              </Typography>
+                            </Box>
                           ))}
                         </Box>
-                      </Paper>
+                      </Card>
                     </motion.div>
                   </Grid>
                 ))}
@@ -391,25 +537,16 @@ const About: React.FC = () => {
         )}
       </Box>
 
-      <Divider sx={{ my: 6 }} />
-
       {/* Honors Section */}
       {honors && honors.length > 0 && (
-        <Box sx={{ mb: 8 }}>
+        <Box sx={{ mb: 10 }}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
           >
-            <Typography
-              variant="h4"
-              component="h2"
-              gutterBottom
-              align="center"
-              sx={{ mb: 6 }}
-            >
-              Honors & Awards
-            </Typography>
+            {sectionHeader("Recognition", "Honors & Awards")}
           </motion.div>
 
           {isLoading ? (
@@ -418,54 +555,78 @@ const About: React.FC = () => {
             <motion.div
               variants={containerVariants}
               initial="hidden"
-              animate="visible"
+              whileInView="visible"
+              viewport={{ once: true }}
             >
               <Grid container spacing={3}>
                 {honors.map((honor: Honor) => (
                   <Grid item xs={12} md={6} key={honor._id}>
                     <motion.div variants={itemVariants}>
                       <Card
-                        elevation={2}
                         sx={{
                           height: "100%",
                           display: "flex",
                           flexDirection: "column",
-                          transition: "all 0.3s ease-in-out",
                           "&:hover": {
-                            transform: "translateY(-5px)",
-                            boxShadow: 6,
+                            transform: "translateY(-4px)",
+                            boxShadow: `0 12px 24px ${alpha(
+                              theme.palette.primary.main,
+                              isDark ? 0.12 : 0.08
+                            )}`,
                           },
                         }}
                       >
-                        <CardContent>
+                        <CardContent sx={{ p: 3 }}>
                           <Box
                             sx={{
                               display: "flex",
                               alignItems: "center",
+                              gap: 2,
                               mb: 2,
                             }}
                           >
-                            <Avatar
+                            <Box
                               sx={{
-                                bgcolor: theme.palette.primary.main,
-                                mr: 2,
+                                width: 44,
+                                height: 44,
+                                borderRadius: "12px",
+                                background: `linear-gradient(135deg, ${alpha(
+                                  theme.palette.primary.main,
+                                  0.15
+                                )}, ${alpha(
+                                  theme.palette.secondary.main,
+                                  0.15
+                                )})`,
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                flexShrink: 0,
                               }}
                             >
-                              <EmojiEventsIcon />
-                            </Avatar>
+                              <EmojiEventsIcon
+                                sx={{
+                                  color: theme.palette.primary.main,
+                                  fontSize: 22,
+                                }}
+                              />
+                            </Box>
                             <Box>
-                              <Typography variant="h6" component="h3">
+                              <Typography variant="h6" sx={{ fontSize: "1rem" }}>
                                 {honor.title}
                               </Typography>
                               <Typography
-                                variant="subtitle1"
+                                variant="caption"
                                 color="text.secondary"
                               >
-                                {honor.issuer} • {honor.date}
+                                {honor.issuer} &middot; {honor.date}
                               </Typography>
                             </Box>
                           </Box>
-                          <Typography variant="body2" paragraph>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ lineHeight: 1.6 }}
+                          >
                             {honor.description}
                           </Typography>
                           {honor.url && (
@@ -473,6 +634,12 @@ const About: React.FC = () => {
                               href={honor.url}
                               target="_blank"
                               rel="noopener noreferrer"
+                              sx={{
+                                display: "inline-block",
+                                mt: 1.5,
+                                fontWeight: 500,
+                                fontSize: "0.85rem",
+                              }}
                             >
                               View Certificate
                             </Link>
@@ -488,45 +655,56 @@ const About: React.FC = () => {
         </Box>
       )}
 
-      <Divider sx={{ my: 6 }} />
-
-      {/* Experience and Education Section */}
+      {/* Experience & Education Section */}
       <Box>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
         >
-          <Typography
-            variant="h4"
-            component="h2"
-            gutterBottom
-            align="center"
-            sx={{ mb: 6 }}
-          >
-            Experience & Education
-          </Typography>
+          {sectionHeader("Journey", "Experience & Education")}
         </motion.div>
 
         {isLoading ? (
           <LinearProgress />
         ) : (
           <Grid container spacing={6}>
-            {/* Experience */}
             <Grid item xs={12} md={6}>
               <motion.div
                 variants={containerVariants}
                 initial="hidden"
-                animate="visible"
+                whileInView="visible"
+                viewport={{ once: true }}
               >
-                <Typography
-                  variant="h5"
-                  component="h3"
-                  gutterBottom
-                  sx={{ mb: 3 }}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    mb: 3,
+                  }}
                 >
-                  Work Experience
-                </Typography>
+                  <Box
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: "10px",
+                      background: alpha(theme.palette.primary.main, 0.1),
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <WorkIcon
+                      sx={{
+                        color: theme.palette.primary.main,
+                        fontSize: 20,
+                      }}
+                    />
+                  </Box>
+                  <Typography variant="h5">Work Experience</Typography>
+                </Box>
 
                 <Timeline position="right">
                   {experiences.map((exp: any) => (
@@ -539,17 +717,23 @@ const About: React.FC = () => {
                       </TimelineOppositeContent>
                       <TimelineSeparator>
                         <TimelineDot color="primary">
-                          <WorkIcon />
+                          <WorkIcon sx={{ fontSize: 16 }} />
                         </TimelineDot>
                         <TimelineConnector />
                       </TimelineSeparator>
                       <TimelineContent>
                         <motion.div variants={itemVariants}>
-                          <Paper elevation={2} sx={{ p: 2, mb: 2 }}>
-                            <Typography variant="h6" component="h4">
+                          <Card sx={{ p: 2.5, mb: 2 }}>
+                            <Typography variant="h6" sx={{ fontSize: "1rem" }}>
                               {exp.title}
                             </Typography>
-                            <Typography variant="subtitle1" color="primary">
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: theme.palette.primary.main,
+                                fontWeight: 500,
+                              }}
+                            >
                               {exp.organization}
                             </Typography>
                             <Typography
@@ -557,7 +741,7 @@ const About: React.FC = () => {
                               color="text.secondary"
                               sx={{
                                 display: { xs: "block", sm: "none" },
-                                mt: 1,
+                                mt: 0.5,
                               }}
                             >
                               {formatDate(exp.startDate)} -{" "}
@@ -565,17 +749,20 @@ const About: React.FC = () => {
                             </Typography>
                             {exp.location && (
                               <Typography
-                                variant="body2"
+                                variant="caption"
                                 color="text.secondary"
-                                gutterBottom
                               >
                                 {exp.location}
                               </Typography>
                             )}
-                            <Typography variant="body2" sx={{ mt: 1 }}>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{ mt: 1, lineHeight: 1.6 }}
+                            >
                               {exp.description}
                             </Typography>
-                          </Paper>
+                          </Card>
                         </motion.div>
                       </TimelineContent>
                     </TimelineItem>
@@ -584,21 +771,41 @@ const About: React.FC = () => {
               </motion.div>
             </Grid>
 
-            {/* Education */}
             <Grid item xs={12} md={6}>
               <motion.div
                 variants={containerVariants}
                 initial="hidden"
-                animate="visible"
+                whileInView="visible"
+                viewport={{ once: true }}
               >
-                <Typography
-                  variant="h5"
-                  component="h3"
-                  gutterBottom
-                  sx={{ mb: 3 }}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                    mb: 3,
+                  }}
                 >
-                  Education
-                </Typography>
+                  <Box
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      borderRadius: "10px",
+                      background: alpha(theme.palette.secondary.main, 0.1),
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <SchoolIcon
+                      sx={{
+                        color: theme.palette.secondary.main,
+                        fontSize: 20,
+                      }}
+                    />
+                  </Box>
+                  <Typography variant="h5">Education</Typography>
+                </Box>
 
                 <Timeline position="right">
                   {education.map((edu: any) => (
@@ -611,17 +818,23 @@ const About: React.FC = () => {
                       </TimelineOppositeContent>
                       <TimelineSeparator>
                         <TimelineDot color="secondary">
-                          <SchoolIcon />
+                          <SchoolIcon sx={{ fontSize: 16 }} />
                         </TimelineDot>
                         <TimelineConnector />
                       </TimelineSeparator>
                       <TimelineContent>
                         <motion.div variants={itemVariants}>
-                          <Paper elevation={2} sx={{ p: 2, mb: 2 }}>
-                            <Typography variant="h6" component="h4">
+                          <Card sx={{ p: 2.5, mb: 2 }}>
+                            <Typography variant="h6" sx={{ fontSize: "1rem" }}>
                               {edu.title}
                             </Typography>
-                            <Typography variant="subtitle1" color="secondary">
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                color: theme.palette.secondary.main,
+                                fontWeight: 500,
+                              }}
+                            >
                               {edu.institution}
                             </Typography>
                             <Typography
@@ -629,7 +842,7 @@ const About: React.FC = () => {
                               color="text.secondary"
                               sx={{
                                 display: { xs: "block", sm: "none" },
-                                mt: 1,
+                                mt: 0.5,
                               }}
                             >
                               {formatDate(edu.startDate)} -{" "}
@@ -637,17 +850,20 @@ const About: React.FC = () => {
                             </Typography>
                             {edu.location && (
                               <Typography
-                                variant="body2"
+                                variant="caption"
                                 color="text.secondary"
-                                gutterBottom
                               >
                                 {edu.location}
                               </Typography>
                             )}
-                            <Typography variant="body2" sx={{ mt: 1 }}>
+                            <Typography
+                              variant="body2"
+                              color="text.secondary"
+                              sx={{ mt: 1, lineHeight: 1.6 }}
+                            >
                               {edu.description}
                             </Typography>
-                          </Paper>
+                          </Card>
                         </motion.div>
                       </TimelineContent>
                     </TimelineItem>
