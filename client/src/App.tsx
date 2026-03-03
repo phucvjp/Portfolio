@@ -48,101 +48,19 @@ const App: React.FC = () => {
         palette: {
           mode,
           primary: {
-            main: "#6366F1",
-            light: "#818CF8",
-            dark: "#4F46E5",
+            main: "#3f51b5",
           },
           secondary: {
-            main: "#a855f7",
-            light: "#d8b4fe",
-            dark: "#9333ea",
-          },
-          success: {
-            main: "#10b981",
-          },
-          warning: {
-            main: "#f59e0b",
-          },
-          error: {
-            main: "#ef4444",
-          },
-          info: {
-            main: "#06b6d4",
+            main: "#f50057",
           },
         },
         typography: {
-          fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
           h1: {
-            fontWeight: 700,
-            fontSize: "3.5rem",
-            letterSpacing: "-0.02em",
+            fontWeight: 600,
           },
           h2: {
-            fontWeight: 700,
-            fontSize: "2.25rem",
-            letterSpacing: "-0.01em",
-          },
-          h3: {
-            fontWeight: 600,
-            fontSize: "1.875rem",
-          },
-          h4: {
-            fontWeight: 600,
-            fontSize: "1.5rem",
-          },
-          h5: {
             fontWeight: 500,
-            fontSize: "1.25rem",
-          },
-          body1: {
-            fontSize: "1rem",
-            lineHeight: 1.6,
-          },
-          body2: {
-            fontSize: "0.875rem",
-            lineHeight: 1.6,
-          },
-        },
-        shape: {
-          borderRadius: 12,
-        },
-        components: {
-          MuiButton: {
-            styleOverrides: {
-              root: {
-                textTransform: "none",
-                fontWeight: 600,
-                transition: "all 0.3s ease",
-              },
-              contained: {
-                boxShadow: "0 4px 12px rgba(99, 102, 241, 0.3)",
-                "&:hover": {
-                  boxShadow: "0 8px 20px rgba(99, 102, 241, 0.4)",
-                },
-              },
-            },
-          },
-          MuiCard: {
-            styleOverrides: {
-              root: {
-                backdropFilter: "blur(4px)",
-                border: `1px solid ${mode === "light" ? "rgba(99, 102, 241, 0.1)" : "rgba(99, 102, 241, 0.2)"}`,
-                transition: "all 0.3s cubic-bezier(0.23, 1, 0.320, 1)",
-                "&:hover": {
-                  boxShadow: mode === "light"
-                    ? "0 20px 40px rgba(99, 102, 241, 0.12)"
-                    : "0 20px 40px rgba(99, 102, 241, 0.3)",
-                  transform: "translateY(-4px)",
-                },
-              },
-            },
-          },
-          MuiChip: {
-            styleOverrides: {
-              root: {
-                fontWeight: 500,
-              },
-            },
           },
         },
       }),

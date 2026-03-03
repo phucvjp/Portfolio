@@ -105,33 +105,20 @@ const Projects: React.FC = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ py: { xs: 6, md: 10 } }}>
+    <Container maxWidth="lg" sx={{ py: { xs: 4, md: 8 } }}>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.5 }}
       >
         <Typography
-          variant="h2"
+          variant="h3"
           component="h1"
           gutterBottom
           align="center"
-          mb={2}
-          sx={{
-            fontWeight: 700,
-            fontSize: { xs: "2rem", md: "2.5rem" },
-            letterSpacing: "-0.01em",
-          }}
+          mb={6}
         >
           My Projects
-        </Typography>
-        <Typography
-          variant="body1"
-          align="center"
-          color="text.secondary"
-          sx={{ mb: 8, maxWidth: "600px", mx: "auto" }}
-        >
-          Explore my portfolio of web applications, tools, and creative solutions
         </Typography>
       </motion.div>
 
@@ -139,75 +126,49 @@ const Projects: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
-        <Box
-          sx={{
-            mb: 6,
-            p: 3,
-            borderRadius: 2,
-            background: theme.palette.mode === "dark"
-              ? "linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)"
-              : "linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%)",
-            border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-          }}
-        >
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <TextField
-                fullWidth
-                variant="outlined"
-                placeholder="Search projects by title, description, or technology..."
-                value={searchTerm}
-                onChange={handleSearchChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <SearchIcon sx={{ color: theme.palette.primary.main }} />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    backgroundColor: theme.palette.mode === "dark"
-                      ? alpha(theme.palette.background.paper, 0.8)
-                      : "white",
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <TextField
-                select
-                fullWidth
-                variant="outlined"
-                value={techFilter}
-                onChange={handleTechFilterChange}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <FilterListIcon sx={{ color: theme.palette.primary.main }} />
-                    </InputAdornment>
-                  ),
-                }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    backgroundColor: theme.palette.mode === "dark"
-                      ? alpha(theme.palette.background.paper, 0.8)
-                      : "white",
-                  },
-                }}
-              >
-                <MenuItem value="All">All Technologies</MenuItem>
-                {availableTechs.map((tech) => (
-                  <MenuItem key={tech} value={tech}>
-                    {tech}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+        <Grid container spacing={2} sx={{ mb: 4 }}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              placeholder="Search projects..."
+              value={searchTerm}
+              onChange={handleSearchChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                ),
+              }}
+            />
           </Grid>
-        </Box>
+          <Grid item xs={12} md={6}>
+            <TextField
+              select
+              fullWidth
+              variant="outlined"
+              value={techFilter}
+              onChange={handleTechFilterChange}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <FilterListIcon />
+                  </InputAdornment>
+                ),
+              }}
+            >
+              <MenuItem value="All">All Technologies</MenuItem>
+              {availableTechs.map((tech) => (
+                <MenuItem key={tech} value={tech}>
+                  {tech}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+        </Grid>
       </motion.div>
 
       {/* Projects */}
@@ -229,201 +190,105 @@ const Projects: React.FC = () => {
                         height: "100%",
                         display: "flex",
                         flexDirection: "column",
-                        overflow: "hidden",
-                        position: "relative",
-                        transition: "all 0.4s cubic-bezier(0.23, 1, 0.320, 1)",
+                        transition: "all 0.3s ease-in-out",
                         "&:hover": {
-                          transform: "translateY(-12px)",
+                          transform: "translateY(-8px)",
+                          boxShadow: 8,
                         },
+                        overflow: "hidden",
                       }}
                     >
-                      <Box
-                        sx={{
-                          position: "relative",
-                          height: 220,
-                          overflow: "hidden",
-                          backgroundColor: alpha(theme.palette.primary.main, 0.1),
-                        }}
-                      >
-                        {project.images && project.images.length > 0 ? (
-                          <CardMedia
-                            component="img"
-                            height="220"
-                            image={project.images[0]}
-                            alt={project.title}
-                            sx={{
-                              width: "100%",
-                              height: "100%",
-                              objectFit: "cover",
-                              transition: "transform 0.4s ease",
-                              "&:hover": {
-                                transform: "scale(1.05)",
-                              },
-                            }}
-                          />
-                        ) : (
-                          <Box
-                            sx={{
-                              width: "100%",
-                              height: "100%",
-                              display: "flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              background: `linear-gradient(135deg, ${alpha(
-                                theme.palette.primary.main,
-                                0.15
-                              )} 0%, ${alpha(theme.palette.secondary.main, 0.15)} 100%)`,
-                            }}
-                          >
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              align="center"
-                              sx={{ fontWeight: 500 }}
-                            >
-                              No images available
-                            </Typography>
-                          </Box>
-                        )}
-                        <Box
+                      {project.images && project.images.length > 0 ? (
+                        <CardMedia
+                          component="img"
+                          height="200"
+                          image={project.images[0]}
+                          alt={project.title}
                           sx={{
-                            position: "absolute",
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            bottom: 0,
-                            background: `linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%)`,
-                            opacity: 0,
-                            transition: "opacity 0.3s ease",
-                            "&:hover": {
-                              opacity: 1,
-                            },
+                            objectFit: "contain",
+                          }}
+                          style={{
+                            marginBottom: "8px",
                           }}
                         />
-                        {project.featured && (
-                          <Box
-                            sx={{
-                              position: "absolute",
-                              top: 12,
-                              right: 12,
-                              zIndex: 10,
-                            }}
-                          >
+                      ) : (
+                        <Box
+                          sx={{
+                            height: "200px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            bgcolor: "grey.200",
+                          }}
+                          style={{
+                            marginBottom: "8px",
+                          }}
+                        >
+                          <Typography variant="h6" color="text.secondary">
+                            No images available
+                          </Typography>
+                        </Box>
+                      )}
+
+                      <CardContent sx={{ flexGrow: 1 }}>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "flex-start",
+                          }}
+                        >
+                          <Typography gutterBottom variant="h5" component="h2">
+                            {project.title}
+                          </Typography>
+                          {project.featured && (
                             <Chip
                               label="Featured"
                               size="small"
                               color="primary"
-                              sx={{
-                                fontWeight: 700,
-                                backgroundColor: theme.palette.primary.main,
-                                color: "white",
-                              }}
+                              sx={{ ml: 1 }}
                             />
-                          </Box>
-                        )}
-                      </Box>
-
-                      <CardContent sx={{ flexGrow: 1, pb: 1 }}>
-                        <Typography
-                          gutterBottom
-                          variant="h5"
-                          component="h2"
-                          sx={{ fontWeight: 700 }}
-                        >
-                          {project.title}
-                        </Typography>
+                          )}
+                        </Box>
                         <Typography
                           variant="body2"
                           color="text.secondary"
                           component="div"
-                          sx={{
-                            minHeight: "3em",
-                            overflow: "hidden",
-                            lineHeight: 1.5,
-                            mb: 2,
-                          }}
+                          sx={{ minHeight: "80px", overflow: "hidden" }}
                           dangerouslySetInnerHTML={{
                             __html:
-                              project.description.length > 100
-                                ? `${project.description.substring(0, 100)}...`
+                              project.description.length > 120
+                                ? `${project.description.substring(0, 120)}...`
                                 : project.description,
                           }}
                         />
                         <Box
                           sx={{
+                            mt: 2,
                             display: "flex",
                             flexWrap: "wrap",
-                            gap: 0.75,
+                            gap: 0.5,
                           }}
                         >
-                          {project.technologies.slice(0, 4).map((tech) => (
+                          {project.technologies.map((tech) => (
                             <Chip
                               key={`${project._id}-${tech}`}
                               label={tech}
                               size="small"
-                              variant="filled"
-                              sx={{
-                                backgroundColor: alpha(
-                                  theme.palette.primary.main,
-                                  0.15
-                                ),
-                                color: theme.palette.primary.main,
-                                fontWeight: 600,
-                                cursor: "pointer",
-                                height: 28,
-                                "& .MuiChip-label": {
-                                  padding: "0 8px",
-                                  fontSize: "0.75rem",
-                                },
-                                transition: "all 0.2s ease",
-                                "&:hover": {
-                                  backgroundColor: alpha(
-                                    theme.palette.primary.main,
-                                    0.25
-                                  ),
-                                  transform: "scale(1.05)",
-                                },
-                              }}
+                              variant="outlined"
+                              sx={{ mr: 0.5, mb: 0.5 }}
                               onClick={() => setTechFilter(tech)}
                             />
                           ))}
-                          {project.technologies.length > 4 && (
-                            <Chip
-                              label={`+${project.technologies.length - 4}`}
-                              size="small"
-                              sx={{
-                                backgroundColor: alpha(
-                                  theme.palette.secondary.main,
-                                  0.1
-                                ),
-                                color: theme.palette.secondary.main,
-                                fontWeight: 600,
-                                height: 28,
-                                "& .MuiChip-label": {
-                                  padding: "0 8px",
-                                  fontSize: "0.75rem",
-                                },
-                              }}
-                            />
-                          )}
                         </Box>
                       </CardContent>
-                      <CardActions sx={{ p: 2, pt: 0, gap: 1 }}>
+                      <CardActions sx={{ p: 2, pt: 0 }}>
                         <Button
                           size="small"
                           color="primary"
                           onClick={() => navigate(`/projects/${project._id}`)}
-                          sx={{
-                            fontWeight: 600,
-                            "&:hover": {
-                              backgroundColor: alpha(
-                                theme.palette.primary.main,
-                                0.1
-                              ),
-                            },
-                          }}
                         >
-                          Details →
+                          View Details
                         </Button>
                         {project.demoLink && (
                           <Button
@@ -432,17 +297,8 @@ const Projects: React.FC = () => {
                             href={project.demoLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            sx={{
-                              fontWeight: 600,
-                              "&:hover": {
-                                backgroundColor: alpha(
-                                  theme.palette.secondary.main,
-                                  0.1
-                                ),
-                              },
-                            }}
                           >
-                            Live
+                            Live Demo
                           </Button>
                         )}
                         {project.githubLink && (
@@ -451,18 +307,8 @@ const Projects: React.FC = () => {
                             href={project.githubLink}
                             target="_blank"
                             rel="noopener noreferrer"
-                            sx={{
-                              fontWeight: 600,
-                              color: theme.palette.text.primary,
-                              "&:hover": {
-                                backgroundColor: alpha(
-                                  theme.palette.action.active,
-                                  0.1
-                                ),
-                              },
-                            }}
                           >
-                            Code
+                            GitHub
                           </Button>
                         )}
                       </CardActions>
@@ -476,28 +322,20 @@ const Projects: React.FC = () => {
               sx={{
                 textAlign: "center",
                 p: 6,
-                background: theme.palette.mode === "dark"
-                  ? `linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(168, 85, 247, 0.1) 100%)`
-                  : `linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%)`,
+                backgroundColor: alpha(theme.palette.primary.main, 0.05),
                 borderRadius: 2,
-                border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
               }}
             >
-              <Typography variant="h5" sx={{ fontWeight: 700, mb: 1 }} color="text.secondary">
-                No projects found
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 3 }}>
-                Try adjusting your search or filters to find what you're looking for.
+              <Typography variant="h6" color="text.secondary">
+                No projects found matching your criteria.
               </Typography>
               <Button
-                variant="contained"
+                variant="outlined"
                 color="primary"
+                sx={{ mt: 2 }}
                 onClick={() => {
                   setSearchTerm("");
                   setTechFilter("All");
-                }}
-                sx={{
-                  fontWeight: 600,
                 }}
               >
                 Clear Filters
