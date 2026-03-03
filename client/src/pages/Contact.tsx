@@ -23,7 +23,6 @@ import { useUserProfile, useSendContactMessage } from "../hooks/useQueries";
 
 const Contact: React.FC = () => {
   const theme = useTheme();
-  const isDark = theme.palette.mode === "dark";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -49,7 +48,7 @@ const Contact: React.FC = () => {
   }, [isLoadingUserProfile, isSendingMessage]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
     const { name: fieldName, value } = e.target;
     switch (fieldName) {
@@ -92,7 +91,7 @@ const Contact: React.FC = () => {
     } catch (err: any) {
       setError(
         err.response?.data?.message ||
-          "Failed to send message. Please try again."
+          "Failed to send message. Please try again.",
       );
       setOpenSnackbar(true);
     } finally {
@@ -177,11 +176,7 @@ const Contact: React.FC = () => {
               <Typography variant="h5" sx={{ mb: 1 }}>
                 Send a Message
               </Typography>
-              <Typography
-                variant="body2"
-                color="text.secondary"
-                sx={{ mb: 4 }}
-              >
+              <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
                 Fill out the form below and I'll get back to you soon.
               </Typography>
 
@@ -213,9 +208,7 @@ const Contact: React.FC = () => {
                         onChange={handleChange}
                         required
                         error={touched.email}
-                        helperText={
-                          touched.email ? "Enter a valid email" : ""
-                        }
+                        helperText={touched.email ? "Enter a valid email" : ""}
                         disabled={loading}
                       />
                     </motion.div>
@@ -241,7 +234,9 @@ const Contact: React.FC = () => {
                   </Grid>
                 </Grid>
 
-                <Box sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}>
+                <Box
+                  sx={{ mt: 3, display: "flex", justifyContent: "flex-end" }}
+                >
                   <Button
                     type="submit"
                     variant="contained"
@@ -320,7 +315,14 @@ const Contact: React.FC = () => {
                 Feel free to reach out through any of these channels.
               </Typography>
 
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 3, position: "relative" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 3,
+                  position: "relative",
+                }}
+              >
                 {contactItems.map((item, index) => (
                   <Box
                     key={index}
@@ -360,7 +362,10 @@ const Contact: React.FC = () => {
               </Box>
 
               <Box sx={{ mt: 5, position: "relative" }}>
-                <Typography variant="body2" sx={{ opacity: 0.8, lineHeight: 1.7 }}>
+                <Typography
+                  variant="body2"
+                  sx={{ opacity: 0.8, lineHeight: 1.7 }}
+                >
                   I'm always open to discussing new projects, creative ideas, or
                   opportunities to be part of your vision.
                 </Typography>

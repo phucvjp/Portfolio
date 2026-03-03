@@ -1,6 +1,6 @@
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Container, Typography, Button, Box, useTheme, alpha } from "@mui/material";
+import { Container, Typography, Button, Box, useTheme } from "@mui/material";
 import { motion } from "framer-motion";
 import HomeIcon from "@mui/icons-material/Home";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -9,7 +9,10 @@ const NotFound: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <Container maxWidth="sm" sx={{ textAlign: "center", py: { xs: 10, md: 16 } }}>
+    <Container
+      maxWidth="sm"
+      sx={{ textAlign: "center", py: { xs: 10, md: 16 } }}
+    >
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -40,8 +43,8 @@ const NotFound: React.FC = () => {
           color="text.secondary"
           sx={{ mb: 5, maxWidth: 400, mx: "auto", lineHeight: 1.7 }}
         >
-          The page you're looking for doesn't exist or has been moved. Let's
-          get you back on track.
+          The page you're looking for doesn't exist or has been moved. Let's get
+          you back on track.
         </Typography>
 
         <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>

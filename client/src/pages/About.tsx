@@ -7,9 +7,7 @@ import {
   Card,
   CardContent,
   Avatar,
-  Divider,
   LinearProgress,
-  Paper,
   Chip,
   useTheme,
   alpha,
@@ -79,11 +77,14 @@ const About: React.FC = () => {
     isLoadingEducation ||
     isLoadingHonors;
 
-  const skillsByCategory = (skills as Skill[]).reduce((acc, skill) => {
-    if (!acc[skill.category]) acc[skill.category] = [];
-    acc[skill.category].push(skill);
-    return acc;
-  }, {} as Record<string, Skill[]>);
+  const skillsByCategory = (skills as Skill[]).reduce(
+    (acc, skill) => {
+      if (!acc[skill.category]) acc[skill.category] = [];
+      acc[skill.category].push(skill);
+      return acc;
+    },
+    {} as Record<string, Skill[]>,
+  );
 
   const formatDate = (dateString?: string | null, current?: boolean) => {
     if (current) return "Present";
@@ -226,7 +227,7 @@ const About: React.FC = () => {
                         borderRadius: "10px",
                         border: `1px solid ${alpha(
                           isDark ? "#fff" : "#000",
-                          0.1
+                          0.1,
                         )}`,
                         display: "flex",
                         alignItems: "center",
@@ -253,7 +254,7 @@ const About: React.FC = () => {
                         borderRadius: "10px",
                         border: `1px solid ${alpha(
                           isDark ? "#fff" : "#000",
-                          0.1
+                          0.1,
                         )}`,
                         display: "flex",
                         alignItems: "center",
@@ -417,7 +418,7 @@ const About: React.FC = () => {
                               borderRadius: "10px",
                               background: alpha(
                                 theme.palette.primary.main,
-                                0.1
+                                0.1,
                               ),
                               display: "flex",
                               alignItems: "center",
@@ -452,7 +453,7 @@ const About: React.FC = () => {
                                 pb: 1.5,
                                 borderBottom: `1px solid ${alpha(
                                   isDark ? "#fff" : "#000",
-                                  0.06
+                                  0.06,
                                 )}`,
                                 "&:last-child": { borderBottom: "none", pb: 0 },
                               }}
@@ -482,7 +483,7 @@ const About: React.FC = () => {
                                       borderRadius: "6px",
                                       background: alpha(
                                         proficiencyColor(skill.proficiency),
-                                        0.15
+                                        0.15,
                                       ),
                                       display: "flex",
                                       alignItems: "center",
@@ -494,7 +495,7 @@ const About: React.FC = () => {
                                         fontSize: "0.65rem",
                                         fontWeight: 700,
                                         color: proficiencyColor(
-                                          skill.proficiency
+                                          skill.proficiency,
                                         ),
                                       }}
                                     >
@@ -519,7 +520,7 @@ const About: React.FC = () => {
                                   borderRadius: 1,
                                   background: alpha(
                                     proficiencyColor(skill.proficiency),
-                                    0.08
+                                    0.08,
                                   ),
                                 }}
                               >
@@ -571,7 +572,7 @@ const About: React.FC = () => {
                             transform: "translateY(-4px)",
                             boxShadow: `0 12px 24px ${alpha(
                               theme.palette.primary.main,
-                              isDark ? 0.12 : 0.08
+                              isDark ? 0.12 : 0.08,
                             )}`,
                           },
                         }}
@@ -592,10 +593,10 @@ const About: React.FC = () => {
                                 borderRadius: "12px",
                                 background: `linear-gradient(135deg, ${alpha(
                                   theme.palette.primary.main,
-                                  0.15
+                                  0.15,
                                 )}, ${alpha(
                                   theme.palette.secondary.main,
-                                  0.15
+                                  0.15,
                                 )})`,
                                 display: "flex",
                                 alignItems: "center",
@@ -611,7 +612,10 @@ const About: React.FC = () => {
                               />
                             </Box>
                             <Box>
-                              <Typography variant="h6" sx={{ fontSize: "1rem" }}>
+                              <Typography
+                                variant="h6"
+                                sx={{ fontSize: "1rem" }}
+                              >
                                 {honor.title}
                               </Typography>
                               <Typography

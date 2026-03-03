@@ -9,7 +9,6 @@ import {
   Card,
   CardContent,
   CardMedia,
-  CardActions,
   Chip,
   Stack,
   LinearProgress,
@@ -183,7 +182,7 @@ const Home: React.FC = () => {
             inset: 0,
             backgroundImage: `radial-gradient(${alpha(
               theme.palette.primary.main,
-              isDark ? 0.08 : 0.04
+              isDark ? 0.08 : 0.04,
             )} 1px, transparent 1px)`,
             backgroundSize: "40px 40px",
             pointerEvents: "none",
@@ -281,7 +280,10 @@ const Home: React.FC = () => {
               item
               xs={12}
               md={4}
-              sx={{ display: { xs: "none", md: "flex" }, justifyContent: "center" }}
+              sx={{
+                display: { xs: "none", md: "flex" },
+                justifyContent: "center",
+              }}
             >
               <motion.div
                 initial={{ opacity: 0, scale: 0.8 }}
@@ -387,7 +389,7 @@ const Home: React.FC = () => {
                             transform: "translateY(-8px)",
                             boxShadow: `0 20px 40px ${alpha(
                               theme.palette.primary.main,
-                              isDark ? 0.15 : 0.1
+                              isDark ? 0.15 : 0.1,
                             )}`,
                             "& .project-image": {
                               transform: "scale(1.05)",
@@ -503,14 +505,18 @@ const Home: React.FC = () => {
                                   project.description.length > 100
                                     ? `${project.description.substring(
                                         0,
-                                        100
+                                        100,
                                       )}...`
                                     : project.description,
                               }}
                             />
                           </Typography>
                           <Box
-                            sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}
+                            sx={{
+                              display: "flex",
+                              flexWrap: "wrap",
+                              gap: 0.75,
+                            }}
                           >
                             {project.technologies.slice(0, 3).map((tech) => (
                               <Chip
@@ -527,7 +533,7 @@ const Home: React.FC = () => {
                                 sx={{
                                   background: alpha(
                                     theme.palette.primary.main,
-                                    0.1
+                                    0.1,
                                   ),
                                   color: theme.palette.primary.main,
                                 }}
@@ -627,11 +633,11 @@ const Home: React.FC = () => {
                             transform: "translateY(-6px)",
                             boxShadow: `0 12px 24px ${alpha(
                               proficiencyColor(skill.proficiency),
-                              0.15
+                              0.15,
                             )}`,
                             borderColor: alpha(
                               proficiencyColor(skill.proficiency),
-                              0.3
+                              0.3,
                             ),
                           },
                         }}
@@ -643,7 +649,7 @@ const Home: React.FC = () => {
                             borderRadius: "14px",
                             background: alpha(
                               proficiencyColor(skill.proficiency),
-                              0.1
+                              0.1,
                             ),
                             display: "flex",
                             alignItems: "center",
@@ -691,7 +697,7 @@ const Home: React.FC = () => {
                             borderRadius: 1,
                             background: alpha(
                               proficiencyColor(skill.proficiency),
-                              0.08
+                              0.08,
                             ),
                           }}
                         >
@@ -734,10 +740,10 @@ const Home: React.FC = () => {
                 borderRadius: 4,
                 background: `linear-gradient(135deg, ${alpha(
                   theme.palette.primary.main,
-                  isDark ? 0.12 : 0.06
+                  isDark ? 0.12 : 0.06,
                 )}, ${alpha(
                   theme.palette.secondary.main,
-                  isDark ? 0.08 : 0.04
+                  isDark ? 0.08 : 0.04,
                 )})`,
                 border: `1px solid ${alpha(theme.palette.primary.main, 0.15)}`,
                 position: "relative",
@@ -754,7 +760,7 @@ const Home: React.FC = () => {
                   borderRadius: "50%",
                   background: `radial-gradient(circle, ${alpha(
                     theme.palette.primary.main,
-                    0.1
+                    0.1,
                   )}, transparent 70%)`,
                   pointerEvents: "none",
                 }}

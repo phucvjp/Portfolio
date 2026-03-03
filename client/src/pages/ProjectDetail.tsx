@@ -10,7 +10,6 @@ import {
   Card,
   CardMedia,
   Skeleton,
-  Paper,
   useTheme,
   alpha,
 } from "@mui/material";
@@ -150,7 +149,7 @@ const ProjectDetail: React.FC = () => {
                     justifyContent: "center",
                     background: `linear-gradient(135deg, ${alpha(
                       theme.palette.primary.main,
-                      0.08
+                      0.08,
                     )}, ${alpha(theme.palette.secondary.main, 0.08)})`,
                   }}
                 >
