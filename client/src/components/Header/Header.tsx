@@ -79,9 +79,33 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AppBar position="sticky" style={{ top: 0, zIndex: 1000 }}>
+    <AppBar
+      position="sticky"
+      style={{ top: 0, zIndex: 1000 }}
+      sx={{
+        backdropFilter: "blur(12px)",
+        backgroundColor: theme.palette.mode === "light"
+          ? "rgba(255, 255, 255, 0.95)"
+          : "rgba(15, 23, 42, 0.95)",
+        backgroundImage: theme.palette.mode === "light"
+          ? "linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(168, 85, 247, 0.05) 100%)"
+          : "linear-gradient(135deg, rgba(99, 102, 241, 0.08) 0%, rgba(168, 85, 247, 0.08) 100%)",
+        boxShadow: `0 2px 12px ${theme.palette.mode === "light"
+          ? "rgba(99, 102, 241, 0.08)"
+          : "rgba(99, 102, 241, 0.15)"}`,
+        borderBottom: `1px solid ${theme.palette.mode === "light"
+          ? "rgba(99, 102, 241, 0.1)"
+          : "rgba(99, 102, 241, 0.2)"}`,
+        color: theme.palette.text.primary,
+      }}
+    >
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar
+          disableGutters
+          sx={{
+            py: 1.5,
+          }}
+        >
           {/* Logo - Desktop */}
           <Typography
             variant="h6"
@@ -89,15 +113,23 @@ const Header: React.FC = () => {
             component={RouterLink}
             to="/"
             sx={{
-              mr: 2,
+              mr: 3,
               display: { xs: "none", md: "flex" },
-              fontWeight: 700,
-              letterSpacing: ".2rem",
-              color: "inherit",
+              fontWeight: 800,
+              fontSize: "1.35rem",
+              letterSpacing: "0.05em",
+              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
               textDecoration: "none",
+              transition: "all 0.3s ease",
+              "&:hover": {
+                transform: "scale(1.05)",
+              },
             }}
           >
-            PORTFOLIO
+            PHUC
           </Typography>
 
           {/* Mobile menu */}
@@ -108,6 +140,9 @@ const Header: React.FC = () => {
               aria-haspopup="true"
               onClick={handleOpenNavMenu}
               color="inherit"
+              sx={{
+                color: theme.palette.primary.main,
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -136,6 +171,14 @@ const Header: React.FC = () => {
                     handleCloseNavMenu();
                     navigate(page.path);
                   }}
+                  sx={{
+                    fontWeight: 500,
+                    color: theme.palette.text.primary,
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.light,
+                      color: "white",
+                    },
+                  }}
                 >
                   <Typography textAlign="center">{page.title}</Typography>
                 </MenuItem>
@@ -150,27 +193,53 @@ const Header: React.FC = () => {
             component={RouterLink}
             to="/"
             sx={{
-              mr: 2,
               display: { xs: "flex", md: "none" },
               flexGrow: 1,
-              fontWeight: 700,
-              letterSpacing: ".2rem",
-              color: "inherit",
+              fontWeight: 800,
+              fontSize: "1.25rem",
+              letterSpacing: "0.05em",
+              background: `linear-gradient(135deg, ${theme.palette.primary.main} 0%, ${theme.palette.secondary.main} 100%)`,
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
               textDecoration: "none",
             }}
           >
-            PORTFOLIO
+            PHUC
           </Typography>
 
           {/* Desktop menu */}
-          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, ml: 2 }}>
             {pages.map((page) => (
               <Button
                 key={page.title}
                 component={RouterLink}
                 to={page.path}
                 onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "block" }}
+                sx={{
+                  mx: 1.5,
+                  color: theme.palette.text.primary,
+                  fontWeight: 600,
+                  fontSize: "0.95rem",
+                  position: "relative",
+                  transition: "all 0.3s ease",
+                  "&::after": {
+                    content: '""',
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: "2px",
+                    background: `linear-gradient(90deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                    transform: "scaleX(0)",
+                    transition: "transform 0.3s ease",
+                    transformOrigin: "right",
+                  },
+                  "&:hover::after": {
+                    transform: "scaleX(1)",
+                    transformOrigin: "left",
+                  },
+                }}
               >
                 {page.title}
               </Button>
@@ -179,20 +248,56 @@ const Header: React.FC = () => {
 
           {/* Theme toggle */}
           <Box sx={{ mr: 2 }}>
-            <IconButton onClick={toggleTheme} color="inherit">
+            <IconButton
+              onClick={toggleTheme}
+              color="inherit"
+              sx={{
+                color: theme.palette.primary.main,
+                transition: "all 0.3s ease",
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.light,
+                  color: "white",
+                },
+              }}
+            >
               {mode === "dark" ? <Brightness7Icon /> : <Brightness4Icon />}
             </IconButton>
           </Box>
 
           {/* User menu */}
           <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Open settings">
-              <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+            <Tooltip title="Account options">
+              <IconButton
+                onClick={handleOpenUserMenu}
+                sx={{
+                  p: 0.5,
+                  border: `2px solid ${theme.palette.primary.main}`,
+                  transition: "all 0.3s ease",
+                  "&:hover": {
+                    boxShadow: `0 4px 12px ${theme.palette.primary.main}33`,
+                    transform: "scale(1.05)",
+                  },
+                }}
+              >
                 {isLoggedIn && user?.profileImage ? (
-                  <Avatar alt={user.name} src={user.profileImage} />
+                  <Avatar
+                    alt={user.name}
+                    src={user.profileImage}
+                    sx={{
+                      width: 36,
+                      height: 36,
+                    }}
+                  />
                 ) : (
-                  <Avatar>
-                    <PersonIcon />
+                  <Avatar
+                    sx={{
+                      width: 36,
+                      height: 36,
+                      background: `linear-gradient(135deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
+                      color: "white",
+                    }}
+                  >
+                    <PersonIcon fontSize="small" />
                   </Avatar>
                 )}
               </IconButton>
@@ -215,15 +320,44 @@ const Header: React.FC = () => {
             >
               {isLoggedIn ? (
                 [
-                  <MenuItem key="dashboard" onClick={handleDashboard}>
+                  <MenuItem
+                    key="dashboard"
+                    onClick={handleDashboard}
+                    sx={{
+                      fontWeight: 500,
+                      "&:hover": {
+                        backgroundColor: theme.palette.primary.light,
+                        color: "white",
+                      },
+                    }}
+                  >
                     <Typography textAlign="center">Dashboard</Typography>
                   </MenuItem>,
-                  <MenuItem key="logout" onClick={handleLogout}>
+                  <MenuItem
+                    key="logout"
+                    onClick={handleLogout}
+                    sx={{
+                      fontWeight: 500,
+                      "&:hover": {
+                        backgroundColor: theme.palette.error.main,
+                        color: "white",
+                      },
+                    }}
+                  >
                     <Typography textAlign="center">Logout</Typography>
                   </MenuItem>,
                 ]
               ) : (
-                <MenuItem onClick={handleLogin}>
+                <MenuItem
+                  onClick={handleLogin}
+                  sx={{
+                    fontWeight: 600,
+                    "&:hover": {
+                      backgroundColor: theme.palette.primary.light,
+                      color: "white",
+                    },
+                  }}
+                >
                   <Typography textAlign="center">Login</Typography>
                 </MenuItem>
               )}
